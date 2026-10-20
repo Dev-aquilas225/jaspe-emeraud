@@ -18,15 +18,21 @@
    * ---------------------------------------------------------------------------
    * WHATSAPP_NUMBER   : numéro WhatsApp au format international, sans « + » ni
    *                     espaces (225 = Côte d’Ivoire). Tous les boutons WhatsApp
-   *                     du site l’utilisent.
+   *                     du site l’utilisent. S’il est laissé vide (''), les
+   *                     boutons WhatsApp renvoient vers la page Contact.
+   * PHONE_DISPLAY     : le même numéro, tel qu’il s’affiche.
    * PAYMENT_NUMBER    : numéro Orange Money / Wave affiché dans les instructions
    *                     de paiement (PAYMENT_NUMBER_RAW = version sans espaces,
    *                     utilisée par les boutons « Copier le numéro »).
    * EMAIL             : adresse de contact affichée.
    * WEB3FORMS_KEY     : clé du service Web3Forms qui transmet les formulaires par
    *                     email (l’adresse de réception se règle sur web3forms.com).
+   * FROM_NAME         : nom de l’expéditeur des emails reçus.
    * PROFS_CSV_URL     : onglet « Professeurs » du tableau Google Sheets (CSV).
    * GALLERY_CSV_URL   : onglet « GALERIE » du même tableau (CSV, paramètre gid).
+   * PAGES             : noms des pages utilisées par les liens automatiques
+   *                     (puces de langues → Équipe, demande « institutions » → Contact).
+   * Les prix « à partir de » de la fenêtre d’inscription sont juste en dessous (OFFERS).
    * =========================================================================== */
   var CONFIG = {
     WHATSAPP_NUMBER: '2250798719076',
@@ -55,16 +61,28 @@
     en: 'Welcome home to JASPE-EMERAUDE GROUP! Let us build together, stone by stone.'
   };
 
-  /* Offres proposées dans la fenêtre d’inscription (valeur, prix « à partir de » en FCFA, libellés). */
+  /* OFFRES de la fenêtre d’inscription.
+     v     : identifiant utilisé par les boutons (data-offer="…") — ne pas modifier ;
+     price : prix « à partir de » en FCFA (0 = « prix sur demande via WhatsApp ») ;
+     pole  : pôle de l’offre (couleur de la fenêtre) ;
+     fr/en : libellés affichés et repris dans le message WhatsApp. */
   var OFFERS = [
-    { v: 'camp-seances', price: 3000, fr: 'English Camp : séances régulières', en: 'English Camp: regular sessions' },
-    { v: 'camp-mini', price: 5000, fr: 'English Camp : mini-camp', en: 'English Camp: mini-camp' },
-    { v: 'camp-grand', price: 20000, fr: 'English Camp : grand camp', en: 'English Camp: grand camp' },
-    { v: 'langues', price: 50000, fr: 'Langues étrangères : cours', en: 'Foreign languages: lessons' },
-    { v: 'training', price: 50000, fr: "Training / Sommet de l'Excellence : formation", en: 'Training / Excellence Summit: training' },
-    { v: 'edition-club', price: 0, fr: "Jaspe'e Editions : club de lecture et d'écriture", en: "Jaspe'e Editions: reading & writing club" },
-    { v: 'edition-auteur', price: 0, fr: "Jaspe'e Editions : accompagnement d'auteur", en: "Jaspe'e Editions: author support" }
+    { v: 'camp-seances', price: 3000, pole: 'camp', fr: 'English Camp : séances régulières', en: 'English Camp: regular sessions' },
+    { v: 'camp-mini', price: 5000, pole: 'camp', fr: 'English Camp : mini-camp', en: 'English Camp: mini-camp' },
+    { v: 'camp-grand', price: 20000, pole: 'camp', fr: 'English Camp : grand camp', en: 'English Camp: grand camp' },
+    { v: 'langues', price: 50000, pole: 'langues', fr: 'Langues étrangères : cours', en: 'Foreign languages: lessons' },
+    { v: 'training', price: 50000, pole: 'training', fr: "Training / Sommet de l'Excellence : formation", en: 'Training / Excellence Summit: training' },
+    { v: 'edition-club', price: 0, pole: 'editions', fr: "Jaspe'e Editions : club de lecture et d'écriture", en: "Jaspe'e Editions: reading & writing club" },
+    { v: 'edition-auteur', price: 0, pole: 'editions', fr: "Jaspe'e Editions : accompagnement d'auteur", en: "Jaspe'e Editions: author support" }
   ];
+  /* Les 5 pôles : numéro, couleur de section (data-tone) et nom affiché. */
+  var POLES = {
+    training: { n: '01', tone: 'sommet', fr: 'Training / Sommet de l’Excellence', en: 'Training / Excellence Summit' },
+    langues: { n: '02', tone: 'langues', fr: 'Langues étrangères', en: 'Foreign languages' },
+    shopping: { n: '03', tone: 'shop', fr: 'Shopping', en: 'Shopping' },
+    camp: { n: '04', tone: 'camp', fr: 'English Camp', en: 'English Camp' },
+    editions: { n: '05', tone: 'editions', fr: 'Jaspe’e Editions', en: 'Jaspe’e Editions' }
+  };
   var LANG_OPTIONS = [
     { v: 'anglais', fr: 'Anglais', en: 'English' },
     { v: 'espagnol', fr: 'Espagnol', en: 'Spanish' },
@@ -93,8 +111,8 @@
    * OUTILS
    * =========================================================================== */
   var root = document.documentElement;
-  var NBSP = ' ';
-  var NNBSP = ' ';
+  var NBSP = '\u00A0';   /* espace insécable (typographie française) */
+  var NNBSP = '\u202F';  /* espace fine insécable (séparateur des milliers en français) */
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
@@ -132,6 +150,7 @@
   }
   var uidN = 0;
   function uid(p) { uidN += 1; return (p || 'jeg') + '-' + uidN; }
+  /* Clé de comparaison : minuscules, sans accents ni espaces/ponctuation (« Matières EN » → « matieresen »). */
   function key(s) {
     return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z]/g, '');
   }
@@ -185,8 +204,10 @@
     zoom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>',
     copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6.5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></svg>',
     alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg>',
-    gem: '<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true" focusable="false"><path d="M38 10h44l28 28v44l-28 28H38L10 82V38z"/><path d="M46 26h28l20 20v28L74 94H46L26 74V46z"/><path d="M38 10l8 16M82 10l-8 16M110 38l-16 8M110 82l-16-8M82 110l-8-16M38 110l8-16M10 82l16-8M10 38l16 8"/></svg>'
+    gem: '<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M38 14h44l24 26-46 68L14 40z"/><path d="M14 40h92M38 14l22 26 22-26M60 40v68"/></svg>'
   };
+  /* Coche animée des écrans de confirmation (cercle + trait dessinés en CSS). */
+  var CHECK_SVG = '<svg class="form-ok__check" viewBox="0 0 52 52" aria-hidden="true" focusable="false"><circle class="form-ok__ring" cx="26" cy="26" r="24" fill="none"/><path class="form-ok__tick" fill="none" d="M15.5 27.5l7 7 14-15"/></svg>';
 
   /* ===========================================================================
    * 1. LANGUE (FR / EN)
@@ -299,8 +320,17 @@
    * 3. WHATSAPP — liens .js-wa (message data-wa-msg-fr / data-wa-msg-en).
    *    « JEG-____ » est remplacé par le dernier code d’inscription (je-last-code).
    * =========================================================================== */
+  /* Lien wa.me avec message prérempli (ou page Contact si aucun numéro n’est configuré). */
   function waUrl(msg) {
+    if (!CONFIG.WHATSAPP_NUMBER) return CONFIG.PAGES.contact;
     return 'https://wa.me/' + CONFIG.WHATSAPP_NUMBER + (msg ? '?text=' + encodeURIComponent(msg) : '');
+  }
+  function setWaLink(a, msg) {
+    a.setAttribute('href', waUrl(msg));
+    if (!CONFIG.WHATSAPP_NUMBER) { a.removeAttribute('target'); return; }
+    a.setAttribute('target', '_blank');
+    var rel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+    if (rel.indexOf('noopener') < 0) a.setAttribute('rel', rel.concat('noopener').join(' '));
   }
   function updateWa(scope) {
     var l = lang(), last = store.get('je-last-code');
@@ -309,10 +339,7 @@
     list.forEach(function (a) {
       var msg = a.getAttribute('data-wa-msg-' + l) || a.getAttribute('data-wa-msg-fr') || WA_DEFAULT[l];
       if (last) msg = msg.replace('JEG-____', last);
-      a.setAttribute('href', waUrl(msg));
-      a.setAttribute('target', '_blank');
-      var rel = (a.getAttribute('rel') || '').split(/\s+/);
-      if (rel.indexOf('noopener') < 0) a.setAttribute('rel', (rel.join(' ') + ' noopener').trim());
+      setWaLink(a, msg);
     });
   }
   onLang(function () { updateWa(); });
@@ -348,7 +375,8 @@
       var t = top();
       if (!t) return;
       Array.prototype.forEach.call(document.body.children, function (n) {
-        if (n === t.el || n.hasAttribute('inert') || /^(SCRIPT|STYLE|TEMPLATE|LINK)$/.test(n.tagName)) return;
+        /* (la région « aria-live » reste active pour les annonces faites depuis la fenêtre) */
+        if (n === t.el || n === liveRegion || n.hasAttribute('inert') || /^(SCRIPT|STYLE|TEMPLATE|LINK)$/.test(n.tagName)) return;
         n.setAttribute('inert', '');
         inertNodes.push(n);
       });
@@ -466,7 +494,7 @@
         : ' aria-label="' + esc(tr(o.label[0], o.label[1])) + '" data-aria-fr="' + esc(o.label[0]) + '" data-aria-en="' + esc(o.label[1]) + '"';
       el.innerHTML =
         '<div class="jm__scrim" aria-hidden="true"></div>' +
-        '<div class="jm__dialog" role="dialog" aria-modal="true" tabindex="-1"' + labelAttrs + '>' +
+        '<div class="jm__dialog" role="dialog" aria-modal="true" tabindex="-1"' + (o.tone ? ' data-tone="' + o.tone + '"' : '') + labelAttrs + '>' +
           '<button type="button" class="jm__close" data-jm-close aria-label="' + esc(tr('Fermer', 'Close')) + '" data-aria-fr="Fermer" data-aria-en="Close">' + ICONS.close + '</button>' +
           o.html +
         '</div>';
@@ -603,14 +631,22 @@
       '<p class="form__note"><a class="link-privacy" href="' + CONFIG.PAGES.privacy + '" target="_blank" rel="noopener">' +
       biHtml('Politique de confidentialité', 'Privacy policy') + '</a></p>';
   }
-  function asideHtml(kicker, titleId, title, text, steps) {
-    return '<aside class="jm__aside">' +
-      '<span class="jm__gem">' + ICONS.gem + '</span>' +
-      '<p class="jm__kicker">' + kicker + '</p>' +
-      '<h2 class="jm__title" id="' + titleId + '">' + title + '</h2>' +
-      '<p class="jm__lead">' + text + '</p>' +
-      (steps ? '<ol class="jm__steps">' + steps.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>' : '') +
+  /* Panneau de couleur à gauche des fenêtres (bandeau en haut sur mobile).
+     Sa couleur = data-tone (emerald par défaut, couleur du pôle pour l’inscription). */
+  function asideHtml(o) {
+    return '<aside class="jm__aside" data-tone="' + (o.tone || 'emerald') + '">' +
+      '<span class="jm__num" aria-hidden="true">' + (o.num || '') + '</span>' +
+      '<p class="jm__kicker">' + o.kicker + '</p>' +
+      '<h2 class="jm__title" id="' + o.titleId + '">' + o.title + '</h2>' +
+      '<p class="jm__lead">' + o.lead + '</p>' +
+      '<p class="jm__pole" hidden></p>' +
+      (o.steps ? '<ol class="jm__steps">' + o.steps.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>' : '') +
       '</aside>';
+  }
+  /* Pôle d’une offre d’inscription (camp, langues, training, editions) ou ''. */
+  function offerPole(v) {
+    for (var i = 0; i < OFFERS.length; i++) if (OFFERS[i].v === v) return OFFERS[i].pole || '';
+    return '';
   }
 
   /* ===========================================================================
@@ -619,7 +655,7 @@
    *    discrète par email (Web3Forms). WhatsApp reste le canal principal.
    * =========================================================================== */
   var Reg = (function () {
-    var el, form, formWrap, done, waBtn, codeBox, codeSr, payFr, payEn, priceHint, langWrap, copyBtn;
+    var el, aside, numEl, poleEl, form, formWrap, done, waBtn, codeBox, codeSr, payFr, payEn, priceHint, langWrap, copyBtn;
 
     function build() {
       if (el) return;
@@ -630,13 +666,13 @@
       ];
       var html =
         '<div class="jm__layout">' +
-        asideHtml(
-          biHtml('Inscription', 'Registration'),
-          'jr-title',
-          biHtml('S’inscrire', 'Register'),
-          biHtml('Quelques informations, puis votre code d’inscription JEG-XXXX vous est remis.', 'A few details, then you receive your JEG-XXXX registration code.'),
-          stepItems
-        ) +
+        asideHtml({
+          kicker: biHtml('Inscription', 'Registration'),
+          titleId: 'jr-title',
+          title: biHtml('S’inscrire.', 'Register.'),
+          lead: biHtml('Quelques informations, puis votre code d’inscription JEG-XXXX vous est remis.', 'A few details, then you receive your JEG-XXXX registration code.'),
+          steps: stepItems
+        }) +
         '<div class="jm__main">' +
           '<div class="reg-form" data-step="form">' +
             '<form class="form" novalidate>' +
@@ -661,7 +697,7 @@
             '<p class="jm__kicker">' + biHtml('Inscription prête', 'Registration ready') + '</p>' +
             '<h3 class="reg-done__title">' + biHtml('Votre code d’inscription', 'Your registration code') + '</h3>' +
             '<div class="reg-code"><strong class="reg-code__value" aria-hidden="true">JEG-0000</strong><span class="jeg-sr reg-code__sr"></span>' +
-              '<button type="button" class="reg-code__copy js-copy" data-copy="" data-copied-fr="Code copié ✓" data-copied-en="Code copied ✓">' + ICONS.copy + '<span>' + biHtml('Copier le code', 'Copy code') + '</span></button>' +
+              '<button type="button" class="reg-code__copy js-copy" data-copy="" data-copied-fr="Code copié ✓" data-copied-en="Code copied ✓"><span class="reg-code__copy-icon">' + ICONS.copy + '</span><span>' + biHtml('Copier le code', 'Copy code') + '</span></button>' +
             '</div>' +
             '<ol class="reg-steps">' +
               '<li>' + biHtml('Envoyez votre inscription sur WhatsApp avec le bouton ci-dessous.', 'Send your registration on WhatsApp using the button below.') + '</li>' +
@@ -670,13 +706,16 @@
             '</ol>' +
             '<p class="form__note">' + biHtml('Votre inscription est confirmée dès vérification du paiement.', 'Your registration is confirmed once the payment has been verified.') + '</p>' +
             '<div class="reg-actions">' +
-              '<a class="btn btn--primary reg-wa" href="#" target="_blank" rel="noopener"><span class="btn__icon">' + ICONS.wa + '</span><span class="btn__label">' + biHtml('Envoyer mon inscription sur WhatsApp', 'Send my registration on WhatsApp') + '</span></a>' +
+              '<a class="btn btn--primary btn--wa reg-wa" href="#" target="_blank" rel="noopener"><span class="btn__icon">' + ICONS.wa + '</span><span class="btn__label">' + biHtml('Envoyer mon inscription sur WhatsApp', 'Send my registration on WhatsApp') + '</span></a>' +
               '<button type="button" class="btn btn--ghost js-copy" data-copy="' + CONFIG.PAYMENT_NUMBER_RAW + '"><span class="btn__label">' + biHtml('Copier le numéro de paiement', 'Copy payment number') + '</span></button>' +
             '</div>' +
           '</div>' +
         '</div>' +
         '</div>';
-      el = Modal.create({ id: 'jeg-reg-modal', cls: 'jm--form', labelledby: 'jr-title', html: html });
+      el = Modal.create({ id: 'jeg-reg-modal', cls: 'jm--form jm--reg', labelledby: 'jr-title', html: html });
+      aside = $('.jm__aside', el);
+      numEl = $('.jm__num', el);
+      poleEl = $('.jm__pole', el);
       form = $('form', el);
       formWrap = $('.reg-form', el);
       done = $('.reg-done', el);
@@ -693,6 +732,17 @@
       form.addEventListener('submit', submit);
     }
 
+    /* Couleur de la fenêtre selon le pôle de l’offre choisie :
+       panneau gauche en data-tone (camp, langues, sommet, editions ; emerald sinon)
+       et data-pole sur la fenêtre (accents --pole / --pole-fg / --pole-soft). */
+    function tint(v) {
+      var key = offerPole(v), p = POLES[key];
+      aside.setAttribute('data-tone', p ? p.tone : 'emerald');
+      if (p) el.setAttribute('data-pole', key); else el.removeAttribute('data-pole');
+      numEl.textContent = p ? p.n : '';
+      poleEl.hidden = !p;
+      poleEl.innerHTML = p ? biHtml('Pôle ' + p.n + ' · ' + esc(p.fr), 'Division ' + p.n + ' · ' + esc(p.en)) : '';
+    }
     function priceText(price) {
       if (price > 0) return biHtml('À partir de ' + fmtNumber(price, NNBSP) + NBSP + 'FCFA', 'From ' + fmtNumber(price, ',') + ' FCFA');
       return biHtml('Prix sur demande via WhatsApp.', 'Price on request via WhatsApp.');
@@ -706,6 +756,7 @@
       }
       var opt = form.elements.offre.selectedOptions[0];
       priceHint.innerHTML = opt ? priceText(parseInt(opt.getAttribute('data-price') || '0', 10)) : '';
+      tint(form.elements.offre.value);
     }
     function showForm() {
       form.reset();
@@ -720,6 +771,7 @@
       build();
       if (!done.hidden) showForm();
       if (hasOption(form.elements.offre, offer)) form.elements.offre.value = offer;
+      if (langPref) langPref = LANGS.indexOf(subjectKey(langPref)) > -1 ? subjectKey(langPref) : 'autre';
       if (hasOption(form.elements.langue, langPref)) form.elements.langue.value = langPref;
       sync(false);
       Modal.open(el, { trigger: trigger });
@@ -773,7 +825,7 @@
       if (opt.value === 'langues') lines.splice(3, 0, (l === 'en' ? 'Language' : 'Langue') + ' : ' + langOpt.getAttribute('data-' + l));
       if (v('email')) lines.push(L[7] + ' : ' + v('email'));
       if (v('message')) lines.push(L[8] + ' : ' + v('message'));
-      waBtn.setAttribute('href', waUrl(lines.join('\n')));
+      setWaLink(waBtn, lines.join('\n'));
 
       /* Écran de confirmation */
       var num = CONFIG.PAYMENT_NUMBER.replace(/ /g, NBSP);
@@ -832,12 +884,12 @@
       if (el) return;
       var html =
         '<div class="jm__layout">' +
-        asideHtml(
-          biHtml('Enseigner avec nous', 'Teach with us'),
-          'jt-title',
-          biHtml('Devenir professeur', 'Become a teacher'),
-          biHtml('Vous enseignez une langue ou une matière ? Envoyez-nous votre candidature.', 'Do you teach a language or a subject? Send us your application.')
-        ) +
+        asideHtml({
+          kicker: biHtml('Enseigner avec nous', 'Teach with us'),
+          titleId: 'jt-title',
+          title: biHtml('Devenir professeur.', 'Become a teacher.'),
+          lead: biHtml('Vous enseignez une langue ou une matière ? Envoyez-nous votre candidature.', 'Do you teach a language or a subject? Send us your application.')
+        }) +
         '<div class="jm__main">' +
           '<div class="teach-form">' +
             '<form class="form" novalidate>' +
@@ -859,11 +911,11 @@
             '<p class="jm__kicker">' + biHtml('Candidature prête', 'Application ready') + '</p>' +
             '<h3 class="reg-done__title">' + biHtml('Dernière étape', 'One last step') + '</h3>' +
             '<p class="reg-done__text">' + biHtml('Envoyez votre candidature sur WhatsApp avec le bouton ci-dessous. Nous reviendrons vers vous très bientôt.', 'Send your application on WhatsApp using the button below. We will get back to you very soon.') + '</p>' +
-            '<div class="reg-actions"><a class="btn btn--primary teach-wa" href="#" target="_blank" rel="noopener"><span class="btn__icon">' + ICONS.wa + '</span><span class="btn__label">' + biHtml('Envoyer ma candidature sur WhatsApp', 'Send my application on WhatsApp') + '</span></a></div>' +
+            '<div class="reg-actions"><a class="btn btn--primary btn--wa teach-wa" href="#" target="_blank" rel="noopener"><span class="btn__icon">' + ICONS.wa + '</span><span class="btn__label">' + biHtml('Envoyer ma candidature sur WhatsApp', 'Send my application on WhatsApp') + '</span></a></div>' +
           '</div>' +
         '</div>' +
         '</div>';
-      el = Modal.create({ id: 'jeg-teach-modal', cls: 'jm--form', labelledby: 'jt-title', html: html });
+      el = Modal.create({ id: 'jeg-teach-modal', cls: 'jm--form jm--teach', labelledby: 'jt-title', html: html });
       form = $('form', el);
       formWrap = $('.teach-form', el);
       done = $('.teach-done', el);
@@ -876,7 +928,8 @@
       build();
       if (!done.hidden) { form.reset(); clearErrors(form); done.hidden = true; formWrap.hidden = false; el.classList.remove('is-done'); }
       if (subject) {
-        var k = subject;
+        /* « Anglais », « english », « anglais »… → anglais ; matière inconnue → « Autre ». */
+        var k = subjectKey(subject);
         var exists = $$('option', form.elements.matiere).some(function (o) { return o.value === k; });
         form.elements.matiere.value = exists ? k : 'autre';
       }
@@ -897,7 +950,7 @@
       if (v('experience')) lines.push(L[5] + ' : ' + v('experience'));
       if (v('dispo')) lines.push(L[6] + ' : ' + v('dispo'));
       if (v('message')) lines.push(L[7] + ' : ' + v('message'));
-      waBtn.setAttribute('href', waUrl(lines.join('\n')));
+      setWaLink(waBtn, lines.join('\n'));
       formWrap.hidden = true;
       done.hidden = false;
       el.classList.add('is-done');
@@ -941,8 +994,6 @@
    * 8. FORMULAIRES DE PAGE — form.js-form[data-form="contact|benevoles|sommet"]
    *    Le bloc de confirmation .form-ok suit immédiatement le formulaire.
    * =========================================================================== */
-  var CHECK_SVG = '<svg class="form-ok__check" viewBox="0 0 52 52" aria-hidden="true" focusable="false"><circle class="form-ok__ring" cx="26" cy="26" r="24" fill="none"/><path class="form-ok__tick" fill="none" d="M15.5 27.5l7 7 14-15"/></svg>';
-
   function findOk(form) {
     var n = form.nextElementSibling;
     if (n && (n.classList.contains('form-ok') || n.classList.contains('ok'))) return n;
@@ -1106,6 +1157,26 @@
     'formation': 'Training', 'sommet de l\'excellence': 'Excellence Summit', 'jaspe\'e editions': "Jaspe'e Editions",
     'jaspe édition': "Jaspe'e Editions", 'english camp': 'English Camp', 'shopping': 'Shopping'
   };
+  /* Texte de la colonne POLE → clé de pôle (training, langues, shopping, camp, editions). */
+  function poleKey(s) {
+    var k = key(s);
+    if (!k) return '';
+    if (k.indexOf('camp') > -1) return 'camp';
+    if (/langue|language/.test(k)) return 'langues';
+    if (/edition|jaspee/.test(k)) return 'editions';
+    if (/shop|fourniture|boutique/.test(k)) return 'shopping';
+    if (/training|sommet|summit|formation/.test(k)) return 'training';
+    return '';
+  }
+  /* Couleur déduite des matières quand la colonne POLE est vide (couleur seulement, jamais de texte). */
+  function subjectsPole(keys) {
+    for (var i = 0; i < keys.length; i++) {
+      if (LANGS.indexOf(keys[i]) > -1) return 'langues';
+      if (keys[i] === 'bureautique') return 'training';
+      if (keys[i] === 'lecture' || keys[i] === 'ecriture') return 'editions';
+    }
+    return '';
+  }
   function subjectKey(s) {
     var k = key(s);
     if (/mandarin|chinois|chinese/.test(k)) return 'chinois';
@@ -1252,14 +1323,18 @@
     box.hidden = false;
     box.classList.add('teachers-filter');
   };
+  /* Fiche professeur (v3) : avatar cerclé de la couleur du pôle, matières en puces,
+     présentation repliable, points forts, étiquette du pôle (data-pole). */
   TeacherGrid.prototype.cardHtml = function (t, i) {
     var self = this;
     var ini = initials(t.name);
     var av = t.photo
       ? '<span class="teacher__avatar" data-initials="' + esc(ini) + '"><img src="' + esc(t.photo) + '" alt="' + esc(t.name) + '" width="160" height="160" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>'
       : '<span class="teacher__avatar" aria-hidden="true"><span class="teacher__initials">' + esc(ini) + '</span></span>';
-    var mfr = t.keys.map(function (k) { return self.label(k)[0]; }).join(' · ');
-    var men = t.keys.map(function (k) { return self.label(k)[1]; }).join(' · ');
+    var subjects = t.keys.length
+      ? '<ul class="teacher__subjects" aria-label="' + esc(tr('Matières', 'Subjects')) + '" data-aria-fr="Matières" data-aria-en="Subjects">' +
+        t.keys.map(function (k) { var L = self.label(k); return '<li>' + bi(L[0], L[1]) + '</li>'; }).join('') + '</ul>'
+      : '';
     var bioId = uid('bio');
     var bio = (t.bfr || t.ben)
       ? '<p class="teacher__bio" id="' + bioId + '">' + bi(t.bfr || t.ben, t.ben || t.bfr) + '</p>' +
@@ -1268,28 +1343,36 @@
     var chips = function (arr, cls) { return '<ul class="teacher__chips' + (cls ? ' ' + cls : '') + '">' + arr.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul>'; };
     var ch = '';
     if (t.cfr.length || t.cen.length) {
-      ch = (t.cen.length && t.cen.join('|') !== t.cfr.join('|') && t.cfr.length)
-        ? chips(t.cfr, 'fr') + chips(t.cen, 'en')
-        : chips(t.cfr.length ? t.cfr : t.cen);
+      ch = '<div class="teacher__strengths"><p class="teacher__label">' + biHtml('Points forts', 'Strengths') + '</p>' +
+        ((t.cen.length && t.cen.join('|') !== t.cfr.join('|') && t.cfr.length)
+          ? chips(t.cfr, 'fr') + chips(t.cen, 'en')
+          : chips(t.cfr.length ? t.cfr : t.cen)) + '</div>';
     }
-    var pole = t.pole ? '<span class="teacher__pole">' + bi(t.pole, POLES_EN[t.pole.toLowerCase()] || t.pole) + '</span>' : '';
-    return '<article class="teacher is-live" style="--i:' + i + '">' +
-      '<span class="teacher__index" aria-hidden="true">' + (i < 9 ? '0' : '') + (i + 1) + '</span>' +
+    /* Étiquette du pôle : uniquement si la colonne POLE est remplie dans le tableau. */
+    var pk = poleKey(t.pole);
+    var pole = t.pole
+      ? '<span class="teacher__pole">' + bi(t.pole, POLES_EN[t.pole.toLowerCase()] || (POLES[pk] && POLES[pk].en) || t.pole) + '</span>'
+      : '';
+    /* Couleur de la fiche : pôle indiqué, sinon déduit des matières (langue → Langues…). */
+    var dataPole = pk || subjectsPole(t.keys);
+    return '<article class="teacher is-live"' + (dataPole ? ' data-pole="' + dataPole + '"' : '') + ' style="--i:' + i + '">' +
       '<div class="teacher__head">' + av +
-        '<div class="teacher__id"><h3 class="teacher__name">' + esc(t.name) + '</h3>' +
-        (mfr ? '<p class="teacher__subjects">' + bi(mfr, men) + '</p>' : '') + '</div>' +
+        '<span class="teacher__index" aria-hidden="true">' + (i < 9 ? '0' : '') + (i + 1) + '</span>' +
       '</div>' +
-      bio + ch +
+      '<h3 class="teacher__name">' + esc(t.name) + '</h3>' +
+      subjects + bio + ch +
       (pole ? '<div class="teacher__foot">' + pole + '</div>' : '') +
       '</article>';
   };
   TeacherGrid.prototype.emptyHtml = function (k) {
     var L = this.label(k);
+    /* « Je veux apprendre » ouvre l’inscription sur l’offre correspondante. */
+    var offer = k === 'bureautique' ? 'training' : 'langues';
     return '<div class="teachers-empty">' +
       '<span class="teachers-empty__gem">' + ICONS.gem + '</span>' +
       '<p>' + biHtml('Aucun professeur n’est encore présenté pour «' + NBSP + esc(L[0]) + NBSP + '».', 'No teacher is listed yet for “' + esc(L[1]) + '”.') + '</p>' +
       '<div class="teachers-empty__actions">' +
-        '<button type="button" class="btn btn--primary btn--sm js-reg" data-offer="langues" data-lang-pref="' + esc(k) + '">' + biHtml('Je veux apprendre', 'I want to learn') + '</button>' +
+        '<button type="button" class="btn btn--primary btn--sm js-reg" data-offer="' + offer + '"' + (offer === 'langues' ? ' data-lang-pref="' + esc(k) + '"' : '') + '>' + biHtml('Je veux apprendre', 'I want to learn') + '</button>' +
         '<button type="button" class="btn btn--ghost btn--sm js-teach" data-subject="' + esc(k) + '">' + biHtml('Je veux enseigner', 'I want to teach') + '</button>' +
       '</div></div>';
   };
@@ -1550,6 +1633,7 @@
     box.__fallback = fallback;
     box.classList.add('is-live');
     box.setAttribute('data-gallery-source', 'sheet');
+    setGalleryEmpty(box);
     prepareFigures(box);
     applyLang(box);
     justifyGallery(box);
@@ -1564,6 +1648,7 @@
           box.removeAttribute('data-gallery-source');
           refreshMotion(box);
         }
+        setGalleryEmpty(box);
         queueJustify(box);
       });
       var onLoad = function () {
@@ -1576,10 +1661,18 @@
     });
     refreshMotion(box);
   }
+  /* Galerie sans aucune photo (ni de secours, ni du tableau) : masquée, ainsi que
+     son bloc parent éventuel [data-gallery-block] (titre « En images » compris). */
+  function setGalleryEmpty(box) {
+    var empty = !$(':scope > figure', box);
+    box.hidden = empty;
+    var block = box.closest('[data-gallery-block]');
+    if (block) block.hidden = empty;
+  }
   function initGalleries() {
     var boxes = $$('[data-gallery]');
     if (!boxes.length) return;
-    boxes.forEach(function (b) { b.classList.add('gallery'); prepareFigures(b); justifyGallery(b); });
+    boxes.forEach(function (b) { b.classList.add('gallery'); setGalleryEmpty(b); prepareFigures(b); justifyGallery(b); });
     if ('ResizeObserver' in window) {
       var widths = new WeakMap();
       var ro = new ResizeObserver(function (entries) {
@@ -1633,7 +1726,7 @@
     function build() {
       if (el) return;
       el = Modal.create({
-        id: 'jeg-lightbox', cls: 'jm--lightbox', label: ['Galerie photo', 'Photo gallery'],
+        id: 'jeg-lightbox', cls: 'jm--lightbox', tone: 'ink', label: ['Galerie photo', 'Photo gallery'],
         html:
           '<div class="lb">' +
             '<p class="lb__count" aria-live="polite"><span class="lb__i">01</span><span class="lb__sep">/</span><span class="lb__n">01</span></p>' +
@@ -1875,6 +1968,10 @@
    * INITIALISATION
    * =========================================================================== */
   function init() {
+    /* Secours si le script de démarrage du <head> est absent : langue et thème mémorisés. */
+    var savedLang = store.get('je-lang'), savedTheme = store.get('je-theme');
+    if (savedLang === 'en' || savedLang === 'fr') root.classList.toggle('lang-en', savedLang === 'en');
+    if (savedTheme === 'dark' || savedTheme === 'light') root.classList.toggle('dark', savedTheme === 'dark');
     applyLang();
     syncThemeButtons();
     updateWa();
