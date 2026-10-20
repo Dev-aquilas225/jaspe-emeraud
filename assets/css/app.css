@@ -8,20 +8,26 @@
  */
 
 :root {
-  /* Hauteur occupée par le bouton WhatsApp flottant (58 px + marge) :
-     le bouton « retour en haut » se place au-dessus avec bottom: var(--float-offset). */
+  /* Hauteur occupée par le bouton WhatsApp flottant (en bas à droite, 58 px + marge).
+     Tout autre élément flottant placé en bas à droite se met au-dessus avec
+     bottom: var(--float-offset). (Le bouton « retour en haut » de main.css est à gauche.) */
   --wa-size: 58px;
   --wa-gap: 18px;
   --float-offset: calc(var(--wa-size) + var(--wa-gap) + 14px);
+}
+/* Couleurs dérivées, calculées dans le contexte de chaque composant
+   (elles suivent donc les sections nuit .section--night / .on-night de main.css). */
+.jm, .form, .field, .form-err, .teacher, .teachers, .teachers-empty, .reg-code, .gallery {
   --jeg-err: var(--ja);
   --jeg-hair: var(--line);
 }
 @supports (color: color-mix(in srgb, red 50%, blue)) {
-  :root {
+  .jm, .form, .field, .form-err, .teacher, .teachers, .teachers-empty, .reg-code, .gallery {
     --jeg-err: color-mix(in srgb, var(--ja) 84%, var(--ink));
     --jeg-hair: color-mix(in srgb, var(--or) 38%, var(--line));
   }
-  html.dark { --jeg-err: var(--ja); }
+  html.dark :is(.jm, .form, .field, .form-err),
+  :is(.section--night, .on-night, .site-footer) :is(.form, .field, .form-err) { --jeg-err: var(--ja); }
 }
 
 /* Texte réservé aux lecteurs d’écran */
@@ -36,7 +42,8 @@
 /* La largeur de la barre de défilement masquée est exposée dans --jeg-scrollbar :
    un en-tête fixe peut l’ajouter à sa marge droite pour ne pas bouger. */
 html.is-scroll-locked { overflow: hidden; }
-html.is-scroll-locked body { padding-right: var(--jeg-scrollbar, 0px); }
+html.is-scroll-locked body,
+html.is-scroll-locked .site-header { padding-right: var(--jeg-scrollbar, 0px); }
 
 /* ---------------------------------------------------------------------------
  * Transition de thème (View Transitions API) — cercle depuis le bouton
@@ -45,25 +52,11 @@ html.is-theme-vt::view-transition-old(root),
 html.is-theme-vt::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 html.is-theme-vt::view-transition-old(root) { z-index: 1; }
 html.is-theme-vt::view-transition-new(root) { z-index: 2; }
+/* (La permutation animée des icônes soleil / lune du bouton est gérée par main.css.) */
 
-/* Bouton thème : permutation animée soleil / lune.
-   Le bouton contient deux SVG : .theme-toggle__sun et .theme-toggle__moon
-   (à défaut : 1er svg = soleil, 2e svg = lune). */
-[data-theme-toggle] { position: relative; }
-[data-theme-toggle] svg {
-  transition: transform .7s var(--ease-out, cubic-bezier(.22,1,.36,1)), opacity .45s var(--ease-out, ease);
-  transform-origin: 50% 50%;
-}
-[data-theme-toggle] svg + svg { position: absolute; inset: 0; margin: auto; }
-/* Mode clair : on montre la lune (passer en sombre). Mode sombre : le soleil. */
-html:not(.dark) [data-theme-toggle] .theme-toggle__sun,
-html:not(.dark) [data-theme-toggle] svg:first-of-type:not(.theme-toggle__moon):not(:only-of-type) {
-  opacity: 0; transform: rotate(-90deg) scale(.4);
-}
-html.dark [data-theme-toggle] .theme-toggle__moon,
-html.dark [data-theme-toggle] svg:nth-of-type(2):not(.theme-toggle__sun) {
-  opacity: 0; transform: rotate(90deg) scale(.4);
-}
+/* Icône SVG dans un bouton (.btn__icon) */
+.btn__icon { display: inline-flex; flex: none; }
+.btn__icon svg { width: 100%; height: 100%; }
 
 /* ===========================================================================
  * FENÊTRES MODALES (.jm)
@@ -414,37 +407,24 @@ html.dark [data-theme-toggle] svg:nth-of-type(2):not(.theme-toggle__sun) {
 }
 .form-err svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--jeg-err); }
 
-/* Formulaires sur fond nuit (sections .section--night, .on-night) */
-.section--night .field__label, .on-night .field__label { color: var(--on-night-2); }
-.section--night .field input:not([type="checkbox"]), .section--night .field select, .section--night .field textarea,
-.on-night .field input:not([type="checkbox"]), .on-night .field select, .on-night .field textarea {
-  background-color: rgba(243, 238, 228, .06); border-color: rgba(243, 238, 228, .24); color: var(--on-night);
+/* Formulaires sur fond nuit : main.css redéfinit les jetons (--bg, --ink, --line, --em…)
+   dans .section--night / .on-night / .site-footer, les champs s’adaptent donc seuls.
+   Seuls quelques réglages restent nécessaires. */
+:is(.section--night, .on-night, .site-footer) .field input:not([type="checkbox"]):focus,
+:is(.section--night, .on-night, .site-footer) .field select:focus,
+:is(.section--night, .on-night, .site-footer) .field textarea:focus {
+  border-color: var(--or); box-shadow: 0 0 0 4px var(--or-soft); background-color: var(--night-2);
 }
-.section--night .field ::placeholder, .on-night .field ::placeholder { color: var(--on-night-2); }
-.section--night .field input:not([type="checkbox"]):focus, .section--night .field select:focus, .section--night .field textarea:focus,
-.on-night .field input:not([type="checkbox"]):focus, .on-night .field select:focus, .on-night .field textarea:focus {
-  background-color: rgba(243, 238, 228, .1); border-color: var(--or); box-shadow: 0 0 0 4px rgba(184, 145, 47, .22);
-}
-.section--night .field select, .on-night .field select {
-  background-image: linear-gradient(45deg, transparent 50%, var(--on-night-2) 50%), linear-gradient(135deg, var(--on-night-2) 50%, transparent 50%);
-}
-.section--night .field select option, .on-night .field select option { background: var(--night-2); color: var(--on-night); }
-.section--night .field__error, .on-night .field__error { color: #F0B49F; }
-.section--night .field.is-invalid input, .on-night .field.is-invalid input { border-color: #F0B49F; box-shadow: 0 0 0 4px rgba(240, 180, 159, .18); }
-.section--night .form-ok, .on-night .form-ok { color: var(--on-night); }
-.section--night .form-ok__ring, .section--night .form-ok__tick, .on-night .form-ok__ring, .on-night .form-ok__tick { stroke: var(--or); }
-.section--night .form__note, .on-night .form__note { color: var(--on-night-2); }
-.section--night .form-err, .on-night .form-err { background: rgba(240, 180, 159, .14); color: var(--on-night); }
-.section--night .form-err svg, .on-night .form-err svg { color: #F0B49F; }
-.section--night .check, .on-night .check { color: var(--on-night-2); }
-.section--night .check__box, .on-night .check__box { background: rgba(243, 238, 228, .06); border-color: rgba(243, 238, 228, .3); }
+:is(.section--night, .on-night, .site-footer) .field select option { background: var(--night-2); color: var(--on-night); }
+:is(.section--night, .on-night, .site-footer) .form-ok__ring,
+:is(.section--night, .on-night, .site-footer) .form-ok__tick { stroke: var(--or); }
 
 /* ===========================================================================
  * PROFESSEURS
  * ========================================================================= */
 .teachers {
   display: grid; gap: clamp(14px, 2vw, 24px);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
 }
 .teacher {
   position: relative; isolation: isolate; overflow: hidden;
@@ -555,24 +535,8 @@ html.dark .filter-chip[aria-pressed="true"] i { background: rgba(11, 19, 16, .18
 .filter-chip.is-zero:not([aria-pressed="true"]) { color: var(--ink-2); }
 .filter-chip.is-zero:not([aria-pressed="true"]) i { background: var(--bg-2); color: var(--ink-2); }
 
-/* Puces de langues (cartes « Langues étrangères ») */
-.lchip {
-  display: inline-flex; align-items: center; gap: 8px;
-  min-height: 42px; padding: 0 16px; border-radius: 999px;
-  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  font: 600 14px/1 var(--sans); text-decoration: none; cursor: pointer;
-  transition: background-color .3s, border-color .3s, color .3s;
-}
-.lchip::after {
-  content: ""; width: 7px; height: 7px; border: solid currentColor; border-width: 1.5px 1.5px 0 0;
-  transform: rotate(45deg) translateX(-2px); opacity: .55;
-  transition: transform .4s var(--ease-out, ease), opacity .3s;
-}
-.lchip:hover { border-color: var(--em); background: var(--em-soft); color: var(--em); }
-.lchip:hover::after { transform: rotate(45deg) translate(1px, -1px); opacity: 1; }
-.lchip:focus-visible { outline: 2px solid var(--or); outline-offset: 3px; }
-.section--night .lchip, .on-night .lchip { background: rgba(243, 238, 228, .06); border-color: rgba(243, 238, 228, .24); color: var(--on-night); }
-.section--night .lchip:hover, .on-night .lchip:hover { background: rgba(243, 238, 228, .12); border-color: var(--or); color: var(--on-night); }
+/* (Les puces de langues .lchip sont stylées par main.css ; app.js leur ajoute
+   .is-active quand le filtre correspondant est actif.) */
 
 /* ===========================================================================
  * GALERIES PHOTO — mise en page justifiée (proportions respectées)
@@ -594,14 +558,14 @@ html.dark .filter-chip[aria-pressed="true"] i { background: rgba(11, 19, 16, .18
 /* Avec JS : chaque rangée est calculée au pixel près (app.js → justifyGallery). */
 .gallery.is-justified > figure { flex: none; aspect-ratio: auto; }
 .gallery.is-justified::after { display: none; }
-.gallery__item img {
+:is(.gallery > figure, .gallery__item) img {
   display: block; width: 100%; height: 100%; object-fit: cover;
   transition: transform 1.2s var(--ease-out, ease), opacity .6s;
 }
 .gallery__item.is-live:not(.is-loaded) img { opacity: 0; }
 .gallery__item.is-live:not(.is-loaded) { background: linear-gradient(110deg, var(--bg-2) 30%, var(--surface) 50%, var(--bg-2) 70%) 0 0 / 300% 100%; animation: jeg-shimmer 1.6s linear infinite; }
 @keyframes jeg-shimmer { to { background-position: -150% 0; } }
-.gallery__item figcaption {
+:is(.gallery > figure, .gallery__item) figcaption {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none;
   padding: 44px 18px 14px;
   background: linear-gradient(transparent, rgba(7, 31, 25, .78));
@@ -623,8 +587,8 @@ html.dark .filter-chip[aria-pressed="true"] i { background: rgba(11, 19, 16, .18
   transition: opacity .35s, transform .5s var(--ease-out, ease);
 }
 .gallery__zoom-icon svg { width: 18px; height: 18px; }
-.gallery__item:hover img { transform: scale(1.05); }
-.gallery__item:hover figcaption { transform: none; opacity: 1; }
+:is(.gallery > figure, .gallery__item):hover img { transform: scale(1.05); }
+:is(.gallery > figure, .gallery__item):hover figcaption { transform: none; opacity: 1; }
 .gallery__item:hover .gallery__zoom-icon,
 .gallery__zoom:focus-visible .gallery__zoom-icon { opacity: 1; transform: none; }
 .gallery__zoom:focus-visible { outline: 2px solid var(--or); outline-offset: -5px; }
@@ -632,7 +596,7 @@ html.dark .filter-chip[aria-pressed="true"] i { background: rgba(11, 19, 16, .18
 @media (hover: none) { .gallery__zoom-icon { opacity: .85; transform: none; width: 34px; height: 34px; } }
 @media (max-width: 599px) {
   .gallery { --row: 132px; }
-  .gallery__item figcaption { padding: 30px 12px 10px; font-size: 9.5px; letter-spacing: .12em; }
+  :is(.gallery > figure, .gallery__item) figcaption { padding: 30px 12px 10px; font-size: 9.5px; letter-spacing: .12em; }
 }
 
 /* Variante « rail » : défilement horizontal */
@@ -784,11 +748,11 @@ html.menu-open .wa-float {
   .jm, .jm *, .jm::before, .jm *::before, .jm *::after,
   .wa-float, .wa-float::before, .wa-float *,
   .teacher, .teacher::before, .teacher *, .teacher *::before, .teachers-empty,
-  .gallery__item, .gallery__item *, .filter-chip, .lchip, .lchip::after,
+  .gallery > figure, .gallery > figure *, .gallery__item, .gallery__item *, .filter-chip,
   .form, .form *, .form-ok, .form-ok *, .form-err, .field__error, .js-copy,
   [data-theme-toggle] svg {
     animation: none !important; transition: none !important;
   }
   .teacher:hover, .filter-chip:hover { transform: none; }
-  .gallery__item:hover img { transform: none; }
+  :is(.gallery > figure, .gallery__item):hover img { transform: none; }
 }

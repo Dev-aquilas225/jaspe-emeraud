@@ -8,45 +8,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
 <style>
-:root{--bg:#FAF6EF;--bg-2:#F3ECE0;--surface:#FFFFFF;--ink:#14211C;--ink-2:#4A5650;--line:#E4DACB;--em:#1B5E4F;--em-ink:#FFFFFF;--em-soft:#E3EEE9;--em-bright:#2FA67F;--ja:#B5563D;--ja-soft:#F6E6DF;--or:#B8912F;--or-ink:#7E6218;--or-soft:#F4ECD6;--night:#071F19;--night-2:#0C2E25;--on-night:#F3EEE4;--on-night-2:rgba(243,238,228,.72);
---serif:"Cormorant Garamond",Georgia,serif;--sans:"Manrope",system-ui,sans-serif;--radius:22px;--radius-lg:36px;--ease-out:cubic-bezier(.22,1,.36,1);--ease-in-out:cubic-bezier(.65,0,.35,1);--z-header:50;--z-menu:60;--z-float:70;--z-modal:80}
-html.dark{--bg:#0B1411;--bg-2:#101C18;--surface:#15221D;--ink:#EEE8DD;--ink-2:#B5BDB6;--line:#26362F;--em:#4FA88F;--em-ink:#0B1310;--em-soft:#183029;--em-bright:#5FD3A8;--ja:#E28B6F;--ja-soft:#2E1E18;--or:#D6B35E;--or-ink:#D6B35E;--or-soft:#2A2516}
-html:not(.lang-en) .en,html.lang-en .fr{display:none!important}
-*,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--sans)}
-h1,h2{font-family:var(--serif);font-weight:600;line-height:1.05;margin:0 0 20px}
-h2{font-size:clamp(34px,5vw,56px)}
-.container{max-width:1320px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
-.section{padding:clamp(56px,8vw,110px) 0}.section--alt{background:var(--bg-2)}.section--night{background:var(--night);color:var(--on-night)}
 .bar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0}
 .bar .container{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.lang-switch{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px}
-.lang-switch button{border:0;background:none;color:var(--ink);font:700 13px var(--sans);padding:8px 12px;border-radius:999px;cursor:pointer}
-.lang-switch [aria-pressed=true]{background:var(--em);color:var(--em-ink)}
-.theme-toggle{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
-.theme-toggle svg{width:20px;height:20px}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;border:1px solid transparent;font:700 15px/1 var(--sans);cursor:pointer;text-decoration:none;transition:background .3s,color .3s}
-.btn--primary{background:var(--em);color:var(--em-ink)}.btn--ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn--gold{background:var(--or);color:#14211C}.btn--light{background:var(--on-night);color:var(--night)}
-.btn--sm{min-height:42px;padding:0 18px;font-size:14px}.btn__icon{display:inline-flex}.btn__icon svg{width:20px;height:20px}
 .btns{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(22px,3vw,40px)}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(22px,3vw,40px)}
 .grid2{display:grid;gap:28px}@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
-footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:300px}
+.tsec{padding:clamp(56px,8vw,110px) 0}
+h2{font-size:clamp(34px,5vw,56px);margin-bottom:20px}
 </style>
 <link rel="stylesheet" href="assets/css/app.css">
+<script src="assets/js/main.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 </head>
 <body>
 <div class="bar"><div class="container">
 <strong>JEG test</strong>
 <div class="lang-switch" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="true">FR</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
-<button type="button" class="theme-toggle" data-theme-toggle aria-label="Mode sombre / Dark mode"><svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+<button type="button" class="theme-toggle" data-theme-toggle aria-label="Mode sombre / Dark mode"><svg class="icon icon--moon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-moon"></use></svg><svg class="icon icon--sun" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-sun"></use></svg></button>
 <button type="button" class="btn btn--primary btn--sm js-reg"><span class="fr">S’inscrire</span><span class="en">Register</span></button>
 </div></div>
 <main id="main">
-<section class="section"><div class="container">
+<section class="tsec"><div class="container">
 <h2>Hooks</h2>
 <div class="btns">
 <button type="button" class="btn btn--primary js-reg" data-offer="camp-seances" id="t-reg-camp">camp-seances</button>
@@ -71,7 +55,7 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </div>
 </div></section>
 
-<section class="section section--alt" id="professeurs"><div class="container">
+<section class="tsec section--alt" style="background:var(--bg-2)" id="professeurs"><div class="container">
 <h2><span class="fr">Nos professeurs</span><span class="en">Our teachers</span></h2>
 <div class="teachers-filter" data-teachers-filter hidden></div>
 <div class="teachers" data-teachers>
@@ -93,7 +77,7 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </div>
 </div></section>
 
-<section class="section"><div class="container">
+<section class="tsec"><div class="container">
 <h2>English Camp — <span class="fr">En images</span><span class="en">In pictures</span></h2>
 <div class="gallery" data-gallery="english-camp" id="g-camp">
 <figure><img src="assets/img/photos/camp-02-sm.webp" srcset="assets/img/photos/camp-02-sm.webp 540w, assets/img/photos/camp-02.webp 1200w" sizes="(min-width: 900px) 30vw, 50vw" width="1200" height="1600" alt="Enfants tenant les lettres « E CAMP »" loading="lazy" decoding="async"><figcaption><span class="fr">Première édition</span><span class="en">First edition</span></figcaption></figure>
@@ -103,7 +87,7 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </div>
 </div></section>
 
-<section class="section section--alt"><div class="container">
+<section class="tsec section--alt" style="background:var(--bg-2)"><div class="container">
 <h2>Editions — rail</h2>
 <div class="gallery gallery--rail" data-gallery="editions" id="g-ed">
 <figure><img src="assets/img/photos/editions-01-sm.webp" srcset="assets/img/photos/editions-01-sm.webp 543w, assets/img/photos/editions-01.webp 1206w" sizes="40vw" width="1206" height="1600" alt="Le livre « Retour à la lecture »" loading="lazy" decoding="async"><figcaption>Retour à la lecture</figcaption></figure>
@@ -111,7 +95,7 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </div>
 </div></section>
 
-<section class="section section--night" id="sommet"><div class="container">
+<section class="tsec section--night" style="background:var(--night)" id="sommet"><div class="container">
 <h2><span class="fr">Sommet de l’Excellence</span><span class="en">Excellence Summit</span></h2>
 <form class="form form--inline js-form" data-form="sommet" novalidate>
 <div class="field">
@@ -126,8 +110,8 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </div>
 </div></section>
 
-<section class="section" id="contact-test"><div class="container grid2">
-<div class="card" id="formulaire">
+<section class="tsec" id="contact-test"><div class="container grid2">
+<div class="tcard" id="formulaire">
 <form class="form js-form" data-form="contact" novalidate>
 <div class="form__row">
 <div class="field"><label class="field__label" for="c-nom"><span class="fr">Nom complet</span><span class="en">Full name</span></label><input id="c-nom" name="nom" required autocomplete="name"></div>
@@ -144,7 +128,7 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </form>
 <div class="form-ok" role="status" hidden><p><span class="fr">Merci, votre message a bien été pris en compte. Nous vous répondrons rapidement.</span><span class="en">Thank you, your message has been received. We’ll reply shortly.</span></p></div>
 </div>
-<div class="card">
+<div class="tcard">
 <form class="form js-form" data-form="benevoles" novalidate>
 <div class="form__row">
 <div class="field"><label class="field__label" for="b-nom"><span class="fr">Nom complet</span><span class="en">Full name</span></label><input id="b-nom" name="nom" required autocomplete="name"></div>
@@ -164,6 +148,6 @@ footer{background:var(--night);color:var(--on-night);padding:80px 0;min-height:3
 </div>
 </div></section>
 </main>
-<footer class="site-footer"><div class="container">Footer</div></footer>
+<footer class="site-footer" style="min-height:300px"><div class="container" style="padding:80px 0">Footer</div></footer>
 </body>
 </html>

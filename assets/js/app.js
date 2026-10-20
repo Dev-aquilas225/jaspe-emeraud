@@ -136,10 +136,18 @@
     return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z]/g, '');
   }
   function fmtNumber(n, sep) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep); }
-  function smoothScrollTo(el) {
+  /* Défilement doux : utilise celui du moteur d’animation (main.js) s’il est présent. */
+  function smoothScrollTo(el, opts) {
     if (!el) return;
+    if (window.JEG && typeof window.JEG.scrollTo === 'function') { window.JEG.scrollTo(el, opts || {}); return; }
     try { el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }); } catch (e) { el.scrollIntoView(); }
   }
+  /* Navigation vers une autre page : avec le rideau de transition de main.js si disponible. */
+  function goTo(url) {
+    if (window.JEG && typeof window.JEG.navigate === 'function') window.JEG.navigate(url);
+    else window.location.href = url;
+  }
+  function isShown(el) { return !!el && el.isConnected && el.getClientRects().length > 0 && !el.closest('[inert],[hidden]'); }
   function debounce(fn, ms) {
     var t; return function () { clearTimeout(t); t = setTimeout(fn, ms); };
   }
@@ -351,6 +359,8 @@
       if (!el || stack.some(function (s) { return s.el === el; })) return;
       var entry = { el: el, trigger: opts.trigger || document.activeElement, onClose: opts.onClose, onKey: opts.onKey };
       stack.push(entry);
+      /* Ferme le méga-menu / menu mobile éventuellement ouverts (main.js). */
+      try { if (window.JEG && typeof window.JEG.closeMenus === 'function') window.JEG.closeMenus(); } catch (e) { /* ignore */ }
       if (el.parentNode !== document.body || el !== document.body.lastElementChild) document.body.appendChild(el);
       el.style.zIndex = String(80 + stack.length);
       el.hidden = false;
@@ -383,11 +393,19 @@
       if (reducedMotion()) finish(); else afterTransition($('.jm__dialog', el), 520, finish);
       updateInert();
       if (!stack.length) { unlockScroll(); root.classList.remove('has-modal'); }
+      /* Retour du focus sur le déclencheur ; s’il a disparu (ex. menu mobile refermé),
+         sur le bouton du menu ou, à défaut, sur le contenu principal. */
       var t = entry.trigger;
-      if (t && t.isConnected && typeof t.focus === 'function' && !t.closest('[inert]')) {
-        try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); }
-      } else if (top()) {
-        var d = $('.jm__dialog', top().el); if (d) d.focus();
+      if (top()) {
+        var host = top().el;
+        var d = isShown(t) && host.contains(t) ? t : $('.jm__dialog', host);
+        if (d) d.focus({ preventScroll: true });
+      } else {
+        if (!isShown(t) || typeof t.focus !== 'function') {
+          t = [$('[data-menu-toggle]'), $('#main'), $('main')].filter(isShown)[0];
+          if (t && !t.matches('a,button,input,select,textarea,[tabindex]')) t.setAttribute('tabindex', '-1');
+        }
+        if (t) { try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); } }
       }
       if (entry.onClose) entry.onClose();
       emit('jeg:modal', { open: stack.length > 0, id: el.id });
@@ -909,14 +927,15 @@
     return { open: open };
   })();
 
-  /* Déclencheurs .js-reg / .js-teach (délégation : fonctionne aussi pour le contenu injecté). */
+  /* Déclencheurs .js-reg / .js-teach (délégation : fonctionne aussi pour le contenu injecté).
+     Phase de capture : passe avant la transition de page de main.js si le déclencheur est un lien. */
   document.addEventListener('click', function (e) {
-    if (!e.target.closest) return;
+    if (!e.target.closest || e.button) return;
     var t = e.target.closest('.js-teach');
     if (t) { e.preventDefault(); Teach.open(t.getAttribute('data-subject'), t); return; }
     var r = e.target.closest('.js-reg');
     if (r) { e.preventDefault(); Reg.open(r.getAttribute('data-offer'), r, r.getAttribute('data-lang-pref')); }
-  });
+  }, true);
 
   /* ===========================================================================
    * 8. FORMULAIRES DE PAGE — form.js-form[data-form="contact|benevoles|sommet"]
@@ -1014,19 +1033,23 @@
         if (href.indexOf(CONFIG.PAGES.contact) < 0) a.setAttribute('href', CONFIG.PAGES.contact + '?sujet=b2b#formulaire');
       });
     }
+    /* Sur la page qui contient le formulaire : préremplissage sur place, sans recharger
+       (phase de capture : passe avant la transition de page de main.js). */
     document.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[data-subject="b2b"]');
-      if (!a) return;
+      if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
       var f = $('form.js-form[data-form="contact"]');
-      if (!f) return; /* lien normal vers contact.html?sujet=b2b */
+      if (!f) return; /* lien normal vers contact.html?sujet=b2b (transition gérée par main.js) */
       e.preventDefault();
       if (f.hidden) { var ok = findOk(f); if (ok) ok.hidden = true; f.hidden = false; }
       prefillB2B(f, true);
       var target = document.getElementById('formulaire') || f;
-      smoothScrollTo(target);
-      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
-      setTimeout(function () { try { target.focus({ preventScroll: true }); } catch (err) { /* ignore */ } }, 400);
-    });
+      smoothScrollTo(target, { focus: true });
+      if (!window.JEG || !window.JEG.scrollTo) {
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        setTimeout(function () { try { target.focus({ preventScroll: true }); } catch (err) { /* ignore */ } }, 400);
+      }
+    }, true);
   }
 
   /* ===========================================================================
@@ -1279,6 +1302,12 @@
     if (this.filterBox) {
       $$('.filter-chip', this.filterBox).forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-k') === cur)); });
     }
+    /* Puces de langues de la page : la langue filtrée est mise en évidence. */
+    $$('.lchip[data-pf]').forEach(function (c) {
+      var on = !!cur && subjectKey(c.getAttribute('data-pf')) === cur;
+      c.classList.toggle('is-active', on);
+      if (c.tagName === 'BUTTON') c.setAttribute('aria-pressed', String(on));
+    });
     this.grid.setAttribute('aria-busy', 'false');
     applyLang(this.grid);
     this.checkBios();
@@ -1343,16 +1372,16 @@
     /* Puces de langues .lchip[data-pf] : filtre sur place, sinon page Équipe. */
     document.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('.lchip[data-pf]');
-      if (!b) return;
+      if (!b || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
       e.preventDefault();
       var k = b.getAttribute('data-pf');
       if (teacherGrids.length) {
         teacherGrids.forEach(function (tg) { tg.setFilter(k, true); });
         smoothScrollTo(document.getElementById('professeurs') || teacherGrids[0].grid);
       } else {
-        window.location.href = CONFIG.PAGES.team + '?matiere=' + encodeURIComponent(k) + '#professeurs';
+        goTo(CONFIG.PAGES.team + '?matiere=' + encodeURIComponent(k) + '#professeurs');
       }
-    });
+    }, true);
   }
 
   /* ===========================================================================
