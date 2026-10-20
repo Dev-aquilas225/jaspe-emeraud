@@ -1,0 +1,58 @@
+<!-- =====================================================================
+     partials/loader.html — paste EXACTLY as the first thing inside <body>.
+     Contains: brand loader (first visit of the session), page-transition
+     curtain, custom cursor and scroll-progress bar. All decorative parts
+     are aria-hidden; nothing here is focusable. main.js drives it.
+     ===================================================================== -->
+<div class="loader" data-loader>
+  <div class="loader__veil" data-loader-veil></div>
+  <p class="sr-only" role="status"><span class="fr">Chargement…</span><span class="en">Loading…</span></p>
+  <div class="loader__corner loader__corner--tl" aria-hidden="true">Abidjan · Côte d’Ivoire</div>
+  <div class="loader__corner loader__corner--tr" aria-hidden="true"><span class="fr">Formation · Langues · English Camp · Édition</span><span class="en">Training · Languages · English Camp · Publishing</span></div>
+  <div class="loader__stage" aria-hidden="true">
+    <div class="loader__gem" data-loader-gem>
+      <span class="loader__glow"></span>
+      <div class="loader__shape" data-loader-shape>
+        <span class="loader__jaspe"></span>
+        <span class="loader__emerald"></span>
+        <span class="loader__shine"></span>
+      </div>
+      <svg class="loader__svg" viewBox="0 0 200 220" preserveAspectRatio="none" focusable="false">
+        <path class="loader__cut" style="--i:0" pathLength="1" d="M14 22.9H186"/>
+        <path class="loader__cut" style="--i:1" pathLength="1" d="M168 8V212"/>
+        <path class="loader__cut" style="--i:2" pathLength="1" d="M186 197.1H14"/>
+        <path class="loader__cut" style="--i:3" pathLength="1" d="M32 212V8"/>
+        <path class="loader__cut" style="--i:4" pathLength="1" d="M18 66.8L76 9"/>
+        <path class="loader__cut" style="--i:5" pathLength="1" d="M124 9L182 66.8"/>
+        <path class="loader__cut" style="--i:6" pathLength="1" d="M182 153.2L124 211"/>
+        <path class="loader__cut" style="--i:7" pathLength="1" d="M76 211L18 153.2"/>
+      </svg>
+      <svg class="loader__facets" viewBox="0 0 100 128" preserveAspectRatio="none" focusable="false">
+        <path class="loader__facet" style="--i:0" pathLength="1" d="M28 10H72L90 28V100L72 118H28L10 100V28Z"/>
+        <path class="loader__facet" style="--i:1" pathLength="1" d="M35 22H65L78 35V93L65 106H35L22 93V35Z"/>
+        <path class="loader__facet" style="--i:2" pathLength="1" d="M22 0L35 22M78 0L65 22M100 22L78 35M100 106L78 93M78 128L65 106M22 128L35 106M0 106L22 93M0 22L22 35"/>
+        <path class="loader__edge" pathLength="1" d="M22 0H78L100 22V106L78 128H22L0 106V22Z"/>
+      </svg>
+    </div>
+    <div class="loader__brand">
+      <span class="loader__name"><span class="loader__l"><span style="--i:0">J</span></span><span class="loader__l"><span style="--i:1">A</span></span><span class="loader__l"><span style="--i:2">S</span></span><span class="loader__l"><span style="--i:3">P</span></span><span class="loader__l"><span style="--i:4">E</span></span><span class="loader__l"><span style="--i:5">-</span></span><span class="loader__l"><span style="--i:6">É</span></span><span class="loader__l"><span style="--i:7">M</span></span><span class="loader__l"><span style="--i:8">E</span></span><span class="loader__l"><span style="--i:9">R</span></span><span class="loader__l"><span style="--i:10">A</span></span><span class="loader__l"><span style="--i:11">U</span></span><span class="loader__l"><span style="--i:12">D</span></span><span class="loader__l"><span style="--i:13">E</span></span></span>
+      <span class="loader__group">GROUP</span>
+    </div>
+    <p class="loader__tagline"><span class="fr">« Poli pour l’excellence »</span><span class="en">“Polished for excellence”</span></p>
+  </div>
+  <div class="loader__meter" aria-hidden="true">
+    <span class="loader__label"><span class="fr">Chargement</span><span class="en">Loading</span></span>
+    <span class="loader__track"><span class="loader__bar" data-loader-bar></span></span>
+    <span class="loader__count"><span data-loader-count>0</span><sup>%</sup></span>
+  </div>
+  <svg class="loader__window" data-loader-window aria-hidden="true" focusable="false"><polygon class="w-table"/><polygon class="w-ring"/><polygon class="w-edge"/></svg>
+</div>
+<div class="curtain" data-curtain aria-hidden="true">
+  <div class="curtain__inner">
+    <img class="curtain__mark" src="assets/img/brand/logo-mark-ivory.webp" srcset="assets/img/brand/logo-mark-ivory.webp 1x, assets/img/brand/logo-mark-ivory@2x.webp 2x" width="242" height="256" alt="" decoding="async">
+    <span class="curtain__name">Jaspe-Émeraude</span>
+    <span class="curtain__bar"></span>
+  </div>
+</div>
+<div class="cursor" aria-hidden="true"><div class="cursor__ring"><i></i><b data-cursor-label></b></div><div class="cursor__dot"><i></i></div></div>
+<div class="scroll-progress" aria-hidden="true"></div>

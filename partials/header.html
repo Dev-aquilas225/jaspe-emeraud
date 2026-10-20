@@ -1,0 +1,87 @@
+<!-- =====================================================================
+     partials/header.html — paste EXACTLY right after partials/loader.html.
+     Skip link + fixed header (nav, "Nos pôles" mega-menu, FR/EN switch,
+     theme toggle, S’inscrire CTA, burger) + mobile full-screen menu.
+     aria-current="page" is set automatically by main.js from the URL
+     (you may also hard-code it on the matching links).
+     ===================================================================== -->
+<a class="skip-link" href="#main"><span class="fr">Aller au contenu</span><span class="en">Skip to content</span></a>
+<header class="site-header" id="site-header" data-header>
+  <div class="site-header__inner container">
+    <a class="brand" href="index.html" aria-label="Jaspe-Émeraude Group — Accueil" data-aria-fr="Jaspe-Émeraude Group — Accueil" data-aria-en="Jaspe-Émeraude Group — Home">
+      <img class="brand-mark" src="assets/img/brand/logo-mark-t.webp" srcset="assets/img/brand/logo-mark-t.webp 1x, assets/img/brand/logo-mark-t@2x.webp 2x" width="242" height="256" alt="" decoding="async">
+      <span class="brand__name" aria-hidden="true"><span class="brand__word">JASPE-ÉMERAUDE</span><span class="brand__group">GROUP</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Navigation principale" data-aria-fr="Navigation principale" data-aria-en="Main navigation">
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="index.html"><span class="fr">Accueil</span><span class="en">Home</span></a></li>
+        <li class="site-nav__item--mega">
+          <button type="button" class="site-nav__link site-nav__trigger" aria-expanded="false" aria-controls="mega-poles" data-mega-trigger><span class="fr">Nos pôles</span><span class="en">Our divisions</span><svg class="icon site-nav__chev" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-chevron-down"></use></svg></button>
+          <div class="mega" id="mega-poles" data-mega hidden>
+            <div class="mega__inner container">
+              <div class="mega__intro">
+                <p class="eyebrow"><span class="eyebrow__num">(05)</span><span class="fr">Nos pôles</span><span class="en">Our divisions</span></p>
+                <p class="mega__title"><span class="fr">Cinq facettes, <em>une même exigence.</em></span><span class="en">Five facets, <em>one standard.</em></span></p>
+                <a class="link-arrow" href="index.html#poles"><span class="fr">Vue d’ensemble</span><span class="en">Overview</span><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-right"></use></svg></a>
+                <div class="mega__preview" aria-hidden="true">
+                  <img class="is-active" data-mega-img="0" src="assets/img/photos/sommet-02-sm.webp" width="720" height="480" alt="" loading="lazy" decoding="async">
+                  <img data-mega-img="1" src="assets/img/photos/camp-06-sm.webp" width="720" height="405" alt="" loading="lazy" decoding="async">
+                  <div class="mega__preview-tile" data-mega-img="2"><svg class="icon" focusable="false"><use href="assets/img/icons.svg#i-bag"></use></svg></div>
+                  <img data-mega-img="3" src="assets/img/photos/camp-03-sm.webp" width="720" height="540" alt="" loading="lazy" decoding="async">
+                  <img data-mega-img="4" src="assets/img/photos/editions-03-sm.webp" width="720" height="590" alt="" loading="lazy" decoding="async">
+                </div>
+              </div>
+              <ul class="mega__list">
+                <li style="--i:0"><a class="mega__item" href="training.html" data-mega-index="0"><span class="mega__num">01</span><span><span class="mega__name"><span class="fr">Training / Sommet de l’Excellence</span><span class="en">Training / Excellence Summit</span></span><span class="mega__desc"><span class="fr">Ateliers et formations professionnelles : bureautique, développement des compétences.</span><span class="en">Workshops and professional training: office software, skills development.</span></span></span><svg class="icon mega__arrow" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+                <li style="--i:1"><a class="mega__item" href="langues.html" data-mega-index="1"><span class="mega__num">02</span><span><span class="mega__name"><span class="fr">Langues étrangères</span><span class="en">Foreign languages</span></span><span class="mega__desc"><span class="fr">Anglais, espagnol, allemand, chinois (mandarin), pour enfants et adultes.</span><span class="en">English, Spanish, German, Chinese (Mandarin), for children and adults.</span></span></span><svg class="icon mega__arrow" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+                <li style="--i:2"><a class="mega__item" href="shopping.html" data-mega-index="2"><span class="mega__num">03</span><span><span class="mega__name">Shopping</span><span class="mega__desc"><span class="fr">Matériel éducatif et fournitures scolaires, au détail ou en volume.</span><span class="en">Educational materials and school supplies, retail or bulk.</span></span></span><svg class="icon mega__arrow" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+                <li style="--i:3"><a class="mega__item" href="english-camp.html" data-mega-index="3"><span class="mega__num">04</span><span><span class="mega__name">English Camp</span><span class="mega__desc"><span class="fr">L’anglais qui se vit, pas qui se récite.</span><span class="en">English you live, not English you recite.</span></span></span><svg class="icon mega__arrow" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+                <li style="--i:4"><a class="mega__item" href="editions.html" data-mega-index="4"><span class="mega__num">05</span><span><span class="mega__name">Jaspe’e Editions</span><span class="mega__desc"><span class="fr">Votre plume, notre exigence.</span><span class="en">Your pen, our standard.</span></span></span><svg class="icon mega__arrow" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li><a class="site-nav__link" href="inscriptions.html"><span class="fr">Agenda &amp; tarifs</span><span class="en">Dates &amp; fees</span></a></li>
+        <li><a class="site-nav__link" href="equipe.html"><span class="fr">Équipe</span><span class="en">Team</span></a></li>
+        <li><a class="site-nav__link" href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="site-header__tools">
+      <div class="lang-switch" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="true">FR</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Mode sombre / Dark mode"><svg class="icon icon--moon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-moon"></use></svg><svg class="icon icon--sun" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-sun"></use></svg></button>
+      <button type="button" class="btn btn--primary btn--sm site-header__cta js-reg" data-magnetic><span class="fr">S’inscrire</span><span class="en">Register</span></button>
+      <a class="nojs-menu" href="#site-footer">Menu</a>
+      <button type="button" class="burger" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" data-menu-toggle><span class="burger__lines" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+<div class="nav-backdrop" data-nav-backdrop hidden></div>
+<div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+  <div class="mobile-menu__scroll">
+    <div class="mobile-menu__inner container">
+      <nav aria-label="Menu mobile" data-aria-fr="Menu mobile" data-aria-en="Mobile menu">
+        <ul class="mobile-menu__list">
+          <li data-mm-item style="--i:0"><a href="index.html"><span class="fr">Accueil</span><span class="en">Home</span></a></li>
+          <li data-mm-item style="--i:1"><a href="inscriptions.html"><span class="fr">Agenda &amp; tarifs</span><span class="en">Dates &amp; fees</span></a></li>
+          <li data-mm-item style="--i:2"><a href="equipe.html"><span class="fr">Équipe</span><span class="en">Team</span></a></li>
+          <li data-mm-item style="--i:3"><a href="contact.html">Contact</a></li>
+        </ul>
+        <p class="mobile-menu__label" data-mm-item style="--i:4"><span class="fr">Nos pôles</span><span class="en">Our divisions</span></p>
+        <ul class="mobile-menu__poles">
+          <li data-mm-item style="--i:5"><a href="training.html"><span class="num">01</span><span><span class="fr">Training / Sommet de l’Excellence</span><span class="en">Training / Excellence Summit</span></span><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+          <li data-mm-item style="--i:6"><a href="langues.html"><span class="num">02</span><span><span class="fr">Langues étrangères</span><span class="en">Foreign languages</span></span><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+          <li data-mm-item style="--i:7"><a href="shopping.html"><span class="num">03</span><span>Shopping</span><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+          <li data-mm-item style="--i:8"><a href="english-camp.html"><span class="num">04</span><span>English Camp</span><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+          <li data-mm-item style="--i:9"><a href="editions.html"><span class="num">05</span><span>Jaspe’e Editions</span><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-up-right"></use></svg></a></li>
+        </ul>
+      </nav>
+      <div class="mobile-menu__foot" data-mm-item style="--i:10">
+        <div class="btn-row">
+          <button type="button" class="btn btn--gold js-reg"><span class="fr">S’inscrire</span><span class="en">Register</span></button>
+          <a class="btn btn--ghost js-wa" href="https://wa.me/2250798719076" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-whatsapp"></use></svg>WhatsApp</a>
+        </div>
+        <p class="mobile-menu__contact"><a href="mailto:manager@jaspeemeraude.com">manager@jaspeemeraude.com</a><br>Abidjan, Côte d’Ivoire</p>
+      </div>
+    </div>
+  </div>
+</div>
