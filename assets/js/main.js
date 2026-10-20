@@ -795,7 +795,7 @@
     lockScroll(true);
     return new Promise(function (resolve) {
       var bar = $('[data-loader-bar]', L), count = $('[data-loader-count]', L);
-      var MIN = 2450, MAX = 5200;
+      var MIN = 2500, MAX = 5200;
       var fontsDone = false, loadDone = doc.readyState === 'complete';
       (doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve()).then(function () { fontsDone = true; });
       if (!loadDone) win.addEventListener('load', function () { loadDone = true; }, { once: true });
@@ -809,8 +809,8 @@
         var ok = loadDone && fontsDone;
         var target = ok ? time : Math.min(time, 0.12 + 0.8 * res);
         if (t > MAX) target = 1;
-        shown += (target * 100 - shown) * 0.12;
-        if (target === 1 && shown > 99.4) shown = 100;
+        shown += (target * 100 - shown) * (ok ? 0.3 : 0.12);
+        if (target === 1 && shown > 99.2) shown = 100;
         var v = Math.floor(shown);
         if (v !== last) { last = v; count.textContent = v; }
         bar.style.transform = 'scaleX(' + (shown / 100).toFixed(4) + ')';
@@ -841,7 +841,7 @@
     function scaled(pts, s) { return pts.map(function (p) { return [cx + (p[0] - cx) * s, cy + (p[1] - cy) * s]; }); }
     function svgPts(pts) { return pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '); }
     function cssPts(pts) { return pts.map(function (p) { return p[0].toFixed(1) + 'px ' + p[1].toFixed(1) + 'px'; }).join(','); }
-    var DUR = 1300, t0 = performance.now(), sent = false;
+    var DUR = 1250, t0 = performance.now(), sent = false;
     function finish() {
       if (!sent) { sent = true; resolve(); }
       L.remove();
@@ -851,9 +851,9 @@
     }
     function frame(now) {
       var t = clamp((now - t0) / DUR, 0, 1);
-      gem.style.opacity = (1 - easeOutCubic(clamp(t / 0.3, 0, 1))).toFixed(3);
-      var u = clamp((t - 0.08) / 0.92, 0, 1);
-      var s = Math.exp(Math.log(sMax) * easeInOutCubic(u));
+      gem.style.opacity = (1 - easeOutCubic(clamp(t / 0.26, 0, 1))).toFixed(3);
+      var u = clamp((t - 0.04) / 0.96, 0, 1);
+      var s = Math.exp(Math.log(sMax) * (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2));
       var o = scaled(OUT, s);
       if (evenodd) {
         veil.style.clipPath = 'polygon(evenodd,0px 0px,' + W + 'px 0px,' + W + 'px ' + H + 'px,0px ' + H + 'px,0px 0px,' + cssPts(o) + ',' + o[0][0].toFixed(1) + 'px ' + o[0][1].toFixed(1) + 'px,0px 0px)';
@@ -866,7 +866,7 @@
         polys.t.setAttribute('points', svgPts(scaled(TAB, s)));
         svg.style.opacity = (1 - clamp((u - 0.4) / 0.5, 0, 1)).toFixed(3);
       }
-      if (!sent && t > 0.2) { sent = true; resolve(); }
+      if (!sent && t > 0.16) { sent = true; resolve(); }
       if (t < 1) raf(frame); else finish();
     }
     raf(frame);
