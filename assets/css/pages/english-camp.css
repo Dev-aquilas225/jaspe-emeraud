@@ -1,0 +1,213 @@
+/* ==========================================================================
+   English Camp (english-camp.html) — Pôle 04, flagship page.
+   Page compositions only: everything generic lives in assets/css/main.css.
+   Colours = tokens + semantic variables only (no hex).
+   ========================================================================== */
+
+/* ---------- Camp accents inside the neutral sections of this page ----------
+   white / mist sections keep their tone but take the camp palette as accent
+   (deep sky-navy blue ≥4.5:1 on white and camp-soft, navy buttons, mint pills). */
+.page-english-camp{--ec-blue:color-mix(in srgb,var(--camp-sky) 50%,var(--camp-navy))}
+.page-english-camp main :is([data-tone="white"],[data-tone="mist"]){
+  --accent:var(--ec-blue); --accent-ink:var(--ec-blue); --accent-fg:var(--white); --accent-2:var(--camp-sky);
+  --surface:var(--camp-soft); --surface-fg:var(--ink); --surface-fg-2:var(--ink-2);
+  --btn-bg:var(--camp-navy); --btn-fg:var(--white); --btn-hover-bg:var(--ec-blue); --btn-hover-fg:var(--white);
+  --btn-accent-bg:var(--camp-sky); --btn-accent-fg:var(--camp-navy);
+  --chip-bg:var(--camp-soft); --chip-fg:var(--camp-navy);
+  --hl-bg:var(--camp-mint); --hl-fg:var(--camp-navy);
+  --focus:var(--camp-navy);
+}
+/* camp-soft sections (white tone painted in the pôle's soft colour) */
+.page-english-camp main .ec-soft{--bg:var(--camp-soft); --surface:var(--white); --chip-bg:var(--white)}
+html.dark .page-english-camp main :is([data-tone="white"],[data-tone="mist"]){
+  --accent:var(--camp-sky); --accent-ink:var(--camp-sky); --accent-fg:var(--camp-navy); --accent-2:var(--camp-sky);
+  --surface:var(--dark-surface); --surface-fg:var(--dark-fg); --surface-fg-2:var(--dark-fg-2);
+  --btn-bg:var(--camp-sky); --btn-fg:var(--camp-navy); --btn-hover-bg:var(--white); --btn-hover-fg:var(--ink);
+  --btn-accent-bg:var(--camp-mint); --btn-accent-fg:var(--camp-navy);
+  --chip-bg:color-mix(in srgb,var(--camp-sky) 16%,transparent); --chip-fg:var(--camp-sky);
+  --hl-bg:var(--camp-mint); --hl-fg:var(--camp-navy);
+  --focus:var(--camp-sky);
+}
+html.dark .page-english-camp main .ec-soft{
+  --bg:color-mix(in srgb,var(--camp-navy) 52%,var(--dark-bg));
+  --surface:color-mix(in srgb,var(--camp-navy) 72%,var(--dark-surface));
+  --border:color-mix(in srgb,var(--white) 13%,transparent);
+  --chip-bg:color-mix(in srgb,var(--camp-sky) 18%,transparent);
+}
+
+/* navy colour world (marquee band, corporate card) */
+.ec-navy{
+  --bg:var(--camp-navy); --bg-image:none;
+  --fg:var(--white); --fg-2:color-mix(in srgb,var(--white) 80%,var(--camp-navy));
+  --accent:var(--camp-mint); --accent-ink:var(--camp-mint); --accent-fg:var(--camp-navy); --accent-2:var(--camp-sky);
+  --surface:var(--camp-navy); --surface-fg:var(--white); --surface-fg-2:color-mix(in srgb,var(--white) 80%,var(--camp-navy));
+  --border:color-mix(in srgb,var(--white) 18%,transparent);
+  --btn-bg:var(--camp-mint); --btn-fg:var(--camp-navy); --btn-hover-bg:var(--white); --btn-hover-fg:var(--camp-navy);
+  --btn-accent-bg:var(--white); --btn-accent-fg:var(--camp-navy);
+  --chip-bg:color-mix(in srgb,var(--white) 12%,transparent); --chip-fg:var(--white);
+  --hl-bg:var(--camp-mint); --hl-fg:var(--camp-navy);
+  --focus:var(--camp-mint);
+  background:var(--bg); color:var(--fg); color-scheme:dark;
+}
+.ec-sticker--navy{--sticker-bg:var(--camp-navy);--sticker-fg:var(--white)}
+
+/* ---------- Hero ---------- */
+.ec-hero{padding-top:clamp(28px,4.4vw,72px)}
+.ec-hero .page-hero__grid{align-items:center}
+@media (min-width:960px){.ec-hero .page-hero__grid{grid-template-columns:minmax(0,6.3fr) minmax(0,5.7fr)}}
+.ec-hero__title{font-size:clamp(2.9rem,6.5vw,7.3rem);line-height:.88;max-width:11.5ch}
+.ec-hero__title .hl{padding-inline:.1em}
+/* hand-drawn scribble crossing out « récite » (draws in after the split reveal) */
+.ec-strike{position:relative;display:inline-block;white-space:nowrap}
+.ec-strike::after{content:"";position:absolute;left:-4%;right:-2%;top:30%;height:.42em;background:var(--white);-webkit-mask:var(--ec-scribble) center/100% 100% no-repeat;mask:var(--ec-scribble) center/100% 100% no-repeat;clip-path:inset(0 0 0 0);transition:clip-path .9s var(--ease-in-out) calc(var(--delay,0ms) + 1150ms);pointer-events:none}
+html.js [data-split]:not(.is-in) .ec-strike::after{clip-path:inset(0 100% 0 0)}
+.page-english-camp{--ec-scribble:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 24' preserveAspectRatio='none'%3E%3Cpath d='M4 15C40 7 80 18 118 9S176 6 196 11' fill='none' stroke='%23000' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M22 19C70 12 130 17 182 13' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")}
+.ec-hero .page-hero__num{color:color-mix(in srgb,var(--white) 34%,transparent)}
+.ec-hero__meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* collage */
+.ec-hero__media{position:relative;width:min(100%,560px);aspect-ratio:560/620;margin-left:auto}
+@media (max-width:959px){.ec-hero__media{width:min(100%,500px);margin-inline:auto}}
+.ec-hero__sun{position:absolute;left:10%;top:7%;width:84%;aspect-ratio:1;border-radius:50%;background:color-mix(in srgb,var(--white) 26%,transparent);pointer-events:none}
+.ec-hero__orbit{position:absolute;left:3%;top:0;width:98%;height:auto;overflow:visible;pointer-events:none}
+.ec-hero__orbit circle{fill:none;stroke:var(--white);stroke-width:1.2;stroke-linecap:round;opacity:.85}
+.ec-hero__layer{position:absolute}
+.ec-hero__layer--main{right:0;top:0;width:65%;z-index:1}
+.ec-hero__layer--a{left:0;top:10%;width:44%;z-index:2}
+.ec-hero__layer--b{left:8%;bottom:0;width:41%;z-index:3}
+.ec-hero__layer--badge{right:-1%;bottom:4%;z-index:4}
+.ec-hero__photo{border:clamp(4px,.45vw,7px) solid var(--white)}
+.ec-hero__layer--a .ec-hero__photo{rotate:-6deg}
+.ec-hero__layer--b .ec-hero__photo{rotate:5deg}
+.ec-hero__chip{right:4%;top:3%;z-index:5}
+/* English Camp badge: floating + wobbling sticker */
+.ec-badge{--size:clamp(104px,10.5vw,152px);display:block;border-radius:50%}
+.ec-badge .badge-logo{--size:inherit;width:var(--size);box-shadow:0 0 0 clamp(4px,.45vw,6px) var(--camp-navy);animation:jeg-float 5.5s var(--ease-in-out) infinite,ec-wobble 9s var(--ease-in-out) infinite}
+.ec-badge:hover .badge-logo{animation-play-state:paused}
+@keyframes ec-wobble{0%,100%{rotate:-9deg}50%{rotate:7deg}}
+
+/* navy marquee band */
+.ec-band{padding-block:0}
+.ec-band .ticker{font-size:clamp(2.1rem,5.6vw,5.4rem);padding-block:clamp(14px,2vw,26px)}
+.ec-band .marquee__img{--ar:1.333;height:.8em}
+
+/* ---------- 01 Immersion (intro) ---------- */
+.ec-intro__statement{font:800 clamp(2rem,3.9vw,3.95rem)/1.02 var(--font-display);letter-spacing:-.04em;max-width:19ch;text-wrap:balance}
+.ec-intro__note{margin-top:clamp(26px,3vw,40px);max-width:56ch;align-items:center;padding:16px 22px 16px 16px}
+.ec-intro__note::before{display:none}
+.ec-intro__note .icon-badge{--size:48px}
+.ec-intro__link{margin-top:clamp(22px,2.6vw,32px)}
+.ec-intro__media{width:min(100%,480px);margin-inline:auto}
+@media (min-width:900px){.ec-intro__media{margin-right:0}}
+.ec-intro__media > .sticker{--sx:-12px;--sr:auto;--sb:6%}
+@media (min-width:900px){.ec-intro__media > .sticker{--sx:-6%}}
+
+/* ---------- 02 Formats (interactive cards) ---------- */
+.ec-format{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:14px;min-width:0;padding:clamp(24px,2.4vw,36px);border-radius:var(--radius-lg);background:var(--surface);color:var(--surface-fg);transition:transform .6s var(--ease-out),color .4s var(--ease-out)}
+@media (min-width:720px){.ec-format{min-height:clamp(320px,27vw,400px)}}
+.ec-format[data-tone]{background-color:var(--bg);background-image:var(--bg-image);--surface-fg:var(--fg);--surface-fg-2:var(--fg-2)}
+/* colour fill that grows from the pointer (or from the bottom on keyboard focus) */
+.ec-format::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--camp-gradient);clip-path:circle(0% at var(--mx,50%) var(--my,100%));transition:clip-path .85s var(--ease-out)}
+.ec-format:is(:hover,:focus-within)::before{clip-path:circle(150% at var(--mx,50%) var(--my,100%))}
+.ec-format--feature::before{display:none}
+.ec-format:is(:hover,:focus-within){
+  --surface-fg:var(--camp-navy); --surface-fg-2:color-mix(in srgb,var(--camp-navy) 86%,var(--camp-sky));
+  --accent:var(--camp-navy); --accent-ink:var(--camp-navy); --accent-fg:var(--white);
+  --btn-bg:var(--camp-navy); --btn-fg:var(--white); --btn-hover-bg:var(--white); --btn-hover-fg:var(--camp-navy);
+  --hl-bg:var(--white); --hl-fg:var(--camp-navy);
+  --chip-bg:color-mix(in srgb,var(--white) 62%,transparent); --chip-fg:var(--camp-navy);
+  --border:color-mix(in srgb,var(--camp-navy) 22%,transparent); --focus:var(--camp-navy);
+}
+.ec-format:hover{transform:translateY(-6px)}
+.ec-format__top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ec-format__num{font:800 clamp(3.4rem,5vw,5rem)/.78 var(--font-display);letter-spacing:-.065em;color:var(--accent);transition:color .4s var(--ease-out)}
+.ec-format__top .icon-badge{transition:transform .8s var(--ease-out),background-color .4s}
+.ec-format:hover .ec-format__top .icon-badge{transform:rotate(-12deg) scale(1.08)}
+.ec-format:is(:hover,:focus-within) .ec-format__top .icon-badge[data-pole]{background:var(--white)}
+.ec-format__title{margin-top:auto;padding-top:clamp(18px,3vw,40px);font:800 clamp(1.55rem,2.2vw,2.15rem)/1 var(--font-display);letter-spacing:-.04em}
+.ec-format__text{color:var(--surface-fg-2);font-size:.98rem;max-width:42ch;transition:color .4s var(--ease-out)}
+.ec-format__foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:6px;padding-top:16px;border-top:1.5px solid var(--border);transition:border-color .4s}
+.ec-format .chip{transition:background-color .4s,color .4s,box-shadow .4s}
+.ec-format .chip--outline{color:var(--surface-fg);box-shadow:inset 0 0 0 1.5px var(--border)}
+/* feature card (grand camp): text + photo */
+.ec-format--feature{padding:0}
+.ec-format--feature .ec-format__content{display:flex;flex-direction:column;gap:14px;flex:1;padding:clamp(24px,2.4vw,36px)}
+.ec-format--feature .ec-format__media{margin:0 clamp(10px,1vw,14px) clamp(10px,1vw,14px);aspect-ratio:16/10;border-radius:calc(var(--radius-lg) - 8px)}
+@media (min-width:1024px){
+  .ec-format--feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:0}
+  .ec-format--feature .ec-format__media{align-self:stretch;margin:clamp(10px,1vw,14px) clamp(10px,1vw,14px) clamp(10px,1vw,14px) 0;aspect-ratio:auto;height:auto;min-height:0}
+}
+.ec-format--feature .icon-badge{background:var(--white);color:var(--camp-navy)}
+
+/* ---------- 03 Safety ---------- */
+.ec-safety .section-head__aside{align-items:center}
+.ec-stat{position:relative;display:grid;place-items:center;width:clamp(200px,19vw,264px);aspect-ratio:1;border-radius:50%;background:var(--surface);color:var(--surface-fg)}
+.ec-stat__ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:jeg-spin 28s linear infinite}
+.ec-stat__ring text{font:700 8.2px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;fill:currentColor}
+.ec-stat__body{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.ec-stat__num{font:800 clamp(4.2rem,6.6vw,6.4rem)/.8 var(--font-display);letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.ec-stat__label{font:600 .72rem/1.25 var(--font-body);letter-spacing:.12em;text-transform:uppercase;max-width:13ch}
+.ec-safety__body{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap)}
+@media (min-width:960px){
+  .ec-safety__body{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:stretch}
+  .ec-safety__media .media{aspect-ratio:auto;height:100%;min-height:340px}
+}
+.ec-safety__chip{left:16px;bottom:16px}
+.ec-safety__chip .icon{width:1.1em;height:1.1em;color:var(--camp-navy)}
+.ec-checks{display:flex;flex-direction:column}
+.ec-checks > li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,1.6vw,22px);align-items:center;padding:clamp(16px,1.8vw,22px) 0;border-bottom:1.5px solid var(--border);font:700 clamp(1.08rem,1.45vw,1.38rem)/1.28 var(--font-display);letter-spacing:-.02em}
+.ec-checks > li:first-child{padding-top:0}
+.ec-checks > li:last-child{padding-bottom:0;border-bottom:0}
+.ec-check{width:clamp(38px,3.2vw,46px);height:auto;border-radius:50%;background:var(--chip-bg)}
+.ec-check circle,.ec-check path{fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ec-check path{stroke-width:3.4}
+
+/* ---------- 04 Dates (ticket strip) ---------- */
+.ec-dates{--notch:var(--bg);position:relative}
+.ec-dates__rail{position:relative;display:none;height:2px;margin-bottom:clamp(28px,3vw,44px);border-radius:2px;background:var(--border);overflow:hidden}
+.ec-dates__rail::after{content:"";position:absolute;inset:0;background:var(--accent);transform-origin:left;transform:scaleX(var(--draw,1))}
+html.js .ec-dates__rail::after{transform:scaleX(var(--draw,0))}
+.ec-dates__grid{display:grid;gap:var(--gap)}
+@media (min-width:900px){.ec-dates__rail{display:block}.ec-dates__grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ec-ticket{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:var(--radius-lg);background:var(--surface);color:var(--surface-fg);transition:transform .6s var(--ease-out)}
+.ec-ticket[data-tone]{background-color:var(--bg);background-image:var(--bg-image);--surface-fg:var(--fg);--surface-fg-2:var(--fg-2)}
+.ec-ticket:hover{transform:translateY(-6px) rotate(-.6deg)}
+.ec-ticket__head{padding:clamp(22px,2.4vw,32px) clamp(22px,2.4vw,32px) 0}
+.ec-ticket__when{margin-top:18px;font:800 clamp(1.9rem,2.7vw,2.65rem)/.98 var(--font-display);letter-spacing:-.045em}
+.ec-ticket__when small{display:block;margin-top:.7em;font:600 .74rem/1.3 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--surface-fg-2)}
+.ec-ticket__body{flex:1;padding:16px clamp(22px,2.4vw,32px) 26px}
+.ec-ticket__title{font:700 var(--fs-h4)/1.15 var(--font-display);letter-spacing:-.02em}
+.ec-ticket__text{margin-top:8px;color:var(--surface-fg-2);font-size:.96rem}
+.ec-ticket__foot{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:22px clamp(22px,2.4vw,32px) clamp(22px,2.4vw,32px);border-top:2px dashed var(--border)}
+.ec-ticket__foot::before,.ec-ticket__foot::after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:var(--notch)}
+.ec-ticket__foot::before{left:-12px}
+.ec-ticket__foot::after{right:-12px}
+.ec-ticket .tag[data-pole]{color:var(--surface-fg)}
+.ec-ticket[data-tone] .tag[data-pole]::before{background:var(--white)}
+
+/* ---------- 05 Gallery ---------- */
+.ec-gallery__head{margin-bottom:clamp(32px,4vw,56px)}
+
+/* ---------- 06 Good to know ---------- */
+.ec-faq__head .lead{margin-top:clamp(16px,2vw,24px)}
+.ec-faq__head .link-arrow{margin-top:clamp(20px,2.4vw,30px)}
+.ec-faq .accordion__body .btn-row{margin-top:1.1em}
+.ec-faq .accordion__item > summary .accordion__label{display:flex;align-items:center;gap:14px}
+.ec-faq .accordion__item > summary .icon-badge{--size:40px}
+
+/* ---------- Final CTA ---------- */
+.ec-cta{overflow:hidden;padding-bottom:0;text-align:center}
+.ec-cta__inner{position:relative;display:flex;flex-direction:column;align-items:center}
+.ec-cta__title{font:800 var(--fs-display)/.9 var(--font-display);letter-spacing:-.04em;max-width:13ch;text-wrap:balance}
+.ec-cta .lead{margin:clamp(18px,2vw,28px) auto 0;max-width:52ch}
+.ec-cta .btn-row{justify-content:center;margin-top:clamp(28px,3vw,40px)}
+.ec-cta__sticker{position:absolute;right:var(--gutter);top:-8px}
+@media (max-width:959px){.ec-cta__sticker{position:relative;right:auto;top:auto;margin-bottom:22px}}
+.ec-cta__giant{display:block;margin:clamp(48px,7vw,112px) 0 0;font:800 clamp(3rem,13.4vw,15rem)/.74 var(--font-display);letter-spacing:-.06em;white-space:nowrap;text-align:center;color:var(--white);transform:translateY(.12em);pointer-events:none;user-select:none;-webkit-user-select:none}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  .ec-badge .badge-logo,.ec-stat__ring{animation:none !important}
+  html.js .ec-dates__rail::after{transform:none}
+  .ec-format::before{transition:none}
+}
