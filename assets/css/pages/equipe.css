@@ -1,0 +1,92 @@
+/* ==========================================================================
+   equipe.html — Nos professeurs & Rejoindre l’équipe (page styles only)
+   Tokens & semantic variables from main.css; no hard-coded colours.
+   ========================================================================== */
+
+/* ---------- Hero (emerald) ---------- */
+.eq-hero{padding-bottom:clamp(64px,8vw,128px)}
+.eq-hero__grid{align-items:center}
+.eq-hero__title{max-width:12ch}
+.eq-jumps{display:grid;gap:10px;margin-top:clamp(28px,3.4vw,44px);max-width:520px}
+@media (min-width:600px){.eq-jumps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.eq-jump{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 10px 10px 18px;border-radius:var(--radius-pill);background:var(--chip-bg);color:var(--fg);text-decoration:none;font:600 .98rem/1.2 var(--font-body);transition:background-color .4s var(--ease-out),color .4s var(--ease-out)}
+.eq-jump__num{font:800 .95rem/1 var(--font-display);letter-spacing:-.02em;color:var(--accent)}
+.eq-jump__label{flex:1}
+.eq-jump__ico{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);flex:none;transition:transform .5s var(--ease-out)}
+.eq-jump__ico .icon{width:18px;height:18px}
+.eq-jump:hover,.eq-jump:focus-visible{background:var(--accent);color:var(--accent-fg)}
+.eq-jump:hover .eq-jump__num,.eq-jump:focus-visible .eq-jump__num{color:var(--accent-fg)}
+.eq-jump:hover .eq-jump__ico,.eq-jump:focus-visible .eq-jump__ico{transform:translateY(3px);background:var(--accent-fg);color:var(--accent)}
+
+.eq-hero__media{padding:0 0 clamp(24px,4vw,56px) clamp(24px,4vw,64px)}
+.eq-hero__main{width:min(100%,460px);margin-left:auto}
+.eq-hero__main img{object-position:28% 50%}
+.eq-hero__round{position:absolute;left:0;bottom:0;z-index:2;width:clamp(150px,17vw,236px)}
+.eq-hero__round .media{box-shadow:0 0 0 clamp(6px,.7vw,10px) var(--bg)}
+.eq-hero__sticker{position:absolute;right:clamp(-10px,-1vw,0px);top:clamp(-14px,-1vw,0px);z-index:3}
+@media (max-width:959px){
+  .eq-hero__media{padding-left:0;max-width:520px;margin-inline:auto;width:100%}
+  .eq-hero__main{margin-inline:auto 0;width:86%}
+  .eq-hero__round{width:42%}
+  .eq-hero__sticker{right:0;top:-10px}
+  .eq-hero__sticker .sticker{--size:104px}
+}
+
+/* ---------- Choice tiles (Je veux apprendre / Je veux enseigner) ---------- */
+.eq-choices{display:grid;gap:var(--gap);margin-bottom:clamp(56px,7vw,104px)}
+@media (min-width:800px){.eq-choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.eq-choice{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:16px;min-height:clamp(300px,30vw,400px);padding:clamp(26px,3vw,44px);border-radius:var(--radius-lg);transition:transform .7s var(--ease-out)}
+.eq-choice::before{content:"";position:absolute;z-index:-1;right:-18%;bottom:-38%;width:70%;aspect-ratio:1;border-radius:50%;background:color-mix(in srgb,var(--fg) 7%,transparent);transform:scale(.7);transition:transform 1s var(--ease-out)}
+.eq-choice:hover{transform:translateY(-6px)}
+.eq-choice:hover::before,.eq-choice:focus-within::before{transform:scale(1.08)}
+.eq-choice__top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.eq-choice__kicker{font:600 var(--fs-eyebrow)/1.3 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.eq-choice__go{display:grid;place-items:center;width:clamp(56px,5.4vw,72px);height:clamp(56px,5.4vw,72px);border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);flex:none;transition:transform .7s var(--ease-out)}
+.eq-choice__go .icon{width:42%;height:42%}
+.eq-choice:hover .eq-choice__go,.eq-choice:focus-within .eq-choice__go{transform:rotate(45deg)}
+.eq-choice__title{margin-top:auto;font:800 clamp(2.3rem,4.6vw,4.4rem)/.9 var(--font-display);letter-spacing:-.05em}
+.eq-choice .eq-choice__link{position:static;display:inline;text-align:left;color:inherit;letter-spacing:inherit;line-height:inherit;font:inherit;cursor:pointer}
+.eq-choice__link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
+.eq-choice__link:focus-visible{outline:none}
+.eq-choice:has(.eq-choice__link:focus-visible){outline:2.5px solid var(--focus);outline-offset:4px}
+.eq-choice__text{color:var(--fg-2);max-width:40ch}
+.eq-choice__foot{display:flex;flex-wrap:wrap;gap:10px;padding-top:16px;border-top:1.5px solid var(--border)}
+
+/* ---------- Teaching team head ---------- */
+.eq-team-head{display:flex;align-items:center;gap:20px;margin-bottom:clamp(22px,3vw,34px)}
+.eq-team-head__title{font:800 var(--fs-h3)/1.05 var(--font-display);letter-spacing:-.035em;flex:none}
+.eq-team-head__rule{flex:1;height:1.5px;background:var(--border)}
+
+/* ---------- Manifesto (mist) ---------- */
+.eq-manifesto__ico{margin:0 auto clamp(20px,2.4vw,32px)}
+.eq-manifesto__text{font:800 clamp(1.9rem,4.4vw,4.1rem)/1.02 var(--font-display);letter-spacing:-.04em;text-wrap:balance;max-width:20ch;margin-inline:auto}
+.eq-manifesto__sign{margin:clamp(20px,2.4vw,32px) 0 0}
+
+/* ---------- Rejoindre (emerald-vivid) ---------- */
+.eq-join__grid{align-items:start}
+.eq-join__title{font:800 var(--fs-h2)/.96 var(--font-display);letter-spacing:-.04em;max-width:14ch}
+.eq-join__text .lead{margin-top:clamp(16px,2vw,24px)}
+.eq-roles{margin-top:clamp(20px,2.4vw,28px)}
+.eq-role .icon{color:var(--accent)}
+.eq-gains__title{margin-top:clamp(40px,5vw,64px);margin-bottom:clamp(16px,2vw,22px);font:800 var(--fs-h3)/1.05 var(--font-display);letter-spacing:-.035em}
+.eq-gains{position:relative;padding-left:clamp(26px,3vw,40px)}
+.eq-gains__line{position:absolute;left:6px;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--border);overflow:hidden}
+.eq-gains__line::after{content:"";position:absolute;inset:0;background:var(--accent);transform-origin:top;transform:scaleY(var(--draw,1))}
+html.js .eq-gains__line::after{transform:scaleY(var(--draw,0))}
+.eq-gains__list{display:grid}
+.eq-gain{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:16px 0;border-bottom:1.5px solid var(--border);transition:padding .5s var(--ease-out)}
+.eq-gain:first-child{border-top:1.5px solid var(--border)}
+.eq-gain:hover{padding-left:8px}
+.eq-gain__ico{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-fg);transition:transform .8s var(--ease-back);transition-delay:calc(var(--delay,0ms) + 220ms)}
+.eq-gain__ico .icon{width:22px;height:22px}
+html.js .eq-gain[data-reveal]:not(.is-in) .eq-gain__ico{transform:scale(0) rotate(-60deg)}
+.eq-gain__title{font:700 var(--fs-h4)/1.2 var(--font-display);letter-spacing:-.02em}
+.eq-gain__text{color:var(--fg-2);font-size:.96rem;margin-top:2px}
+.eq-gain__num{font:800 clamp(1.4rem,2vw,1.9rem)/1 var(--font-display);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--fg);opacity:.55}
+@media (max-width:479px){.eq-gain{grid-template-columns:auto minmax(0,1fr)}.eq-gain__num{display:none}}
+
+.eq-form{gap:22px}
+.eq-form__head{display:flex;align-items:center;gap:16px}
+.eq-form__title{font:800 clamp(1.5rem,2.2vw,2rem)/1 var(--font-display);letter-spacing:-.035em}
+.eq-form__sub{margin-top:4px;font-size:.9rem;color:var(--fg-2)}
+.eq-form .form__actions .btn{flex:1 1 auto}
