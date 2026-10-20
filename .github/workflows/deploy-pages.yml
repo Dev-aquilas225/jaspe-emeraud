@@ -36,6 +36,9 @@ jobs:
             --exclude 'README.md' --exclude 'netlify.toml' \
             ./ _site/
           touch _site/.nojekyll
+          # La 404 est servie à n'importe quelle profondeur : sur GitHub Pages
+          # le site vit sous /<dépôt>/, on y fait pointer la base de secours.
+          sed -i "s|<base href=\"/\">|<base href=\"/${GITHUB_REPOSITORY#*/}/\">|" _site/404.html
 
       - uses: actions/upload-pages-artifact@v3
         with:

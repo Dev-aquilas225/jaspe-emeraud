@@ -17,7 +17,7 @@
 .cta-band__title{line-height:1}
 /* sticker: top-right corner of the identity card / bottom-right of the device panel */
 .legal-hero .page-hero__sticker{left:auto;right:clamp(-28px,-1.6vw,-10px);top:clamp(-48px,-3vw,-30px);bottom:auto}
-.legal-hero .device + .page-hero__sticker{top:auto;bottom:clamp(-56px,-3.4vw,-34px)}
+.legal-hero .device + .page-hero__sticker{top:auto;bottom:clamp(-86px,-5.6vw,-60px)}
 @media (max-width:959px){
   .legal-hero .page-hero__sticker{--size:96px;right:6px}
   .legal-hero .page-hero__sticker .sticker{--size:96px}
@@ -196,3 +196,4 @@ html.no-js .legal-toc__progress{display:none}
 @media (prefers-reduced-motion:reduce){
   .device__keys > li:hover,.legal-dl__row:hover,.purpose-list > li:hover,.rights__verbs > li:hover{transform:none;padding-left:0}
 }
+html.dark .legal-hero .sticker--ink{--sticker-bg:var(--em-400);--sticker-fg:var(--em-900)}
