@@ -1,0 +1,7 @@
+# Jaspe-Émeraude Group — https://jaspe-emeraudegroup.com/
+User-agent: *
+Allow: /
+Disallow: /partials/
+Disallow: /docs/
+
+Sitemap: https://jaspe-emeraudegroup.com/sitemap.xml

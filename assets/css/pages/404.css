@@ -1,0 +1,82 @@
+/* ==========================================================================
+   assets/css/pages/404.css — « Cette page s’est égarée »
+   Emerald tone, giant 4◆4 whose 0 is a shattered emerald (SVG facets driven by
+   assets/js/pages/404.js; no-JS = static shattered gem, reduced motion = static).
+   No url(#…) references in the SVG: the page runs under a computed <base href>.
+   Tokens & semantic variables only (docs/design-system.md).
+   ========================================================================== */
+
+.nf{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;min-height:calc(100svh - var(--header-h));padding-block:clamp(28px,4.4vw,64px) clamp(44px,5.6vw,88px)}
+.nf__inner{position:relative}
+.nf__eyebrow{display:flex;justify-content:center;margin-inline:auto}
+
+/* ---------- 4 ◆ 4 ---------- */
+.nf__code{display:flex;align-items:center;justify-content:center;gap:clamp(2px,1.2vw,22px);font:800 clamp(9.5rem,28vw,18rem)/.8 var(--font-display);letter-spacing:-.06em;color:var(--fg);user-select:none;-webkit-user-select:none}
+.nf__digit{position:relative;z-index:1;display:block;pointer-events:none}
+.nf__digit--outline{color:transparent;-webkit-text-stroke:max(3px,.026em) var(--accent)}
+.nf__gem{position:relative;z-index:0;display:block;flex:none;width:.68em;height:.87em;margin-inline:.02em;border-radius:var(--radius);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.nf__gem::before{content:"";position:absolute;left:50%;top:50%;z-index:-1;width:150%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--fg) 22%,transparent);animation:jeg-spin 48s linear infinite;transition:border-color .6s var(--ease-out),scale .9s var(--ease-back)}
+.nf__gem.is-whole::before{border-color:var(--accent);scale:1.08}
+.nf__gem:focus-visible{outline-offset:10px;border-radius:var(--radius)}
+.nf-gem{position:absolute;left:-30%;top:-23.4375%;width:160%;height:146.875%;overflow:visible;pointer-events:none}
+
+/* facets — shades of the brand emerald (light from the top-left) */
+.nf-facet{stroke:color-mix(in srgb,var(--white) 42%,transparent);stroke-width:.45;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;
+  transform:translate(calc(var(--tx,0) * 1px),calc(var(--ty,0) * 1px)) rotate(calc(var(--r,0) * 1deg))}
+html.js .nf-facet{transform:none}
+.nf-facet--a{fill:color-mix(in srgb,var(--em-400) 32%,var(--white))}
+.nf-facet--b{fill:color-mix(in srgb,var(--em-400) 68%,var(--white))}
+.nf-facet--c{fill:var(--em-400)}
+.nf-facet--d{fill:var(--em-500)}
+.nf-facet--e{fill:var(--em-600)}
+.nf-facet--f{fill:var(--em-700)}
+.nf-gem__flash{fill:var(--white);opacity:0}
+.nf-gem__glint{fill:var(--white);opacity:0;transform-box:fill-box;transform-origin:center}
+.nf-gem__crack{fill:none;stroke:var(--white);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;opacity:0}
+.nf__gem.is-whole .nf-gem__flash{animation:nf-flash 1s var(--ease-out)}
+.nf__gem.is-whole .nf-gem__glint{animation:nf-glint 1.3s var(--ease-out) .12s}
+.nf__gem.is-cracking .nf-gem__crack{animation:nf-crack .6s var(--ease-out)}
+@keyframes nf-flash{0%{opacity:0}22%{opacity:.55}100%{opacity:0}}
+@keyframes nf-glint{0%{opacity:0;transform:scale(.2) rotate(0deg)}40%{opacity:1;transform:scale(1.3) rotate(45deg)}100%{opacity:0;transform:scale(.6) rotate(90deg)}}
+@keyframes nf-crack{0%{opacity:1;stroke-dashoffset:1}65%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+
+/* hint under the gem */
+.nf__hint{display:flex;justify-content:center;margin-top:clamp(14px,2vw,26px);font:600 var(--fs-eyebrow)/1.3 var(--font-body);letter-spacing:.14em;text-transform:uppercase;text-align:center;color:var(--fg-2)}
+.nf__hint-whole{display:none;color:var(--accent-ink)}
+.nf.is-whole .nf__hint-broken{display:none}
+.nf.is-whole .nf__hint-whole{display:inline}
+html.no-js .nf__hint{visibility:hidden}
+
+/* ---------- message + actions ---------- */
+.nf__grid{display:grid;gap:clamp(18px,2.6vw,40px);margin-top:clamp(30px,4.4vw,64px);align-items:end}
+@media (min-width:960px){.nf__grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}}
+.nf__title{font:800 var(--fs-h1)/.92 var(--font-display);letter-spacing:-.045em;max-width:12ch;text-wrap:balance}
+.nf__lead{font-size:var(--fs-lead);line-height:1.55;color:var(--fg-2);max-width:46ch}
+.nf__path{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;min-width:0;margin-top:16px;color:var(--fg-2)}
+.nf__path-label{font:600 .7rem/1.2 var(--font-body);letter-spacing:.14em;text-transform:uppercase}
+.nf__path code{display:block;max-width:100%;min-width:0;padding:.4em .8em;border-radius:8px;background:var(--surface);color:var(--fg);font:500 .85rem/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nf__actions{margin-top:clamp(20px,2.4vw,30px)}
+
+/* ---------- pôles ---------- */
+.nf__poles{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:clamp(32px,4.4vw,60px);padding-top:clamp(20px,2.4vw,28px);border-top:1.5px solid var(--border)}
+.nf__poles-label{font:600 var(--fs-eyebrow)/1.3 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2)}
+.nf__chips{display:flex;flex-wrap:wrap;gap:8px}
+.nf__chips .chip{transition:transform .45s var(--ease-back),box-shadow .3s}
+.nf__chips .chip:hover,.nf__chips .chip:focus-visible{transform:translateY(-3px) rotate(-2deg);box-shadow:0 0 0 2px var(--fg)}
+
+/* ---------- floating shards (decor) ---------- */
+.nf__shards{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.nf__shard{position:absolute;width:var(--s,48px);height:auto;overflow:visible}
+.nf__shard polygon{fill:var(--sf,var(--em-400));opacity:var(--so,.22);transform-box:fill-box;transform-origin:center;animation:nf-turn var(--sd,14s) var(--ease-in-out) infinite alternate}
+.nf__shard--1{left:5%;top:14%;--s:58px;--sd:13s}
+.nf__shard--2{right:7%;top:10%;--s:40px;--sf:var(--em-600);--so:1;--sd:17s}
+.nf__shard--3{left:10%;bottom:20%;--s:36px;--sf:var(--em-100);--so:.16;--sd:11s}
+.nf__shard--4{right:12%;bottom:26%;--s:66px;--sf:var(--em-700);--so:1;--sd:19s}
+.nf__shard--5{left:46%;top:4%;--s:24px;--so:.4;--sd:9s}
+@keyframes nf-turn{to{transform:rotate(38deg) scale(1.08)}}
+@media (max-width:719px){.nf__shard--3,.nf__shard--5{display:none}.nf__shard--1{top:8%;--s:40px}.nf__shard--4{bottom:8%;--s:44px}}
+
+@media (prefers-reduced-motion:reduce){
+  .nf__gem::before,.nf__shard polygon{animation:none}
+  .nf__chips .chip:hover,.nf__chips .chip:focus-visible{transform:none}
+}
