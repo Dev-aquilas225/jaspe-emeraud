@@ -154,7 +154,8 @@ html.no-js .ed-gallery [data-gallery] figcaption{position:absolute;left:12px;bot
 /* ---------- CTA ---------- */
 .ed-cta .cta-band__title{max-width:12ch}
 @media (min-width:960px){
-  .ed-cta .cta-band__grid{padding-top:clamp(56px,6vw,96px)}
+  /* top room = sticker top + size: the stacked actions column always starts below the sticker */
+  .ed-cta .cta-band__grid{padding-top:clamp(96px,8.6vw,124px)}
   .ed-cta__actions{flex-direction:column;align-items:stretch;min-width:300px}
 }
 @media (max-width:959px){

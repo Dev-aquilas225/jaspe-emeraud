@@ -10,7 +10,7 @@
 .eq-jumps{display:grid;gap:10px;margin-top:clamp(28px,3.4vw,44px);max-width:520px}
 @media (min-width:600px){.eq-jumps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .eq-jump{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 10px 10px 18px;border-radius:var(--radius-pill);background:var(--chip-bg);color:var(--fg);text-decoration:none;font:600 .98rem/1.2 var(--font-body);transition:background-color .4s var(--ease-out),color .4s var(--ease-out)}
-.eq-jump__num{font:800 .95rem/1 var(--font-display);letter-spacing:-.02em;color:var(--accent)}
+.eq-jump__num{font:800 .95rem/1 var(--font-display);letter-spacing:-.02em;color:color-mix(in srgb,var(--accent) 85%,var(--fg))} /* small text on the chip fill: lifted to ≥4.5:1 */
 .eq-jump__label{flex:1}
 .eq-jump__ico{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);flex:none;transition:transform .5s var(--ease-out)}
 .eq-jump__ico .icon{width:18px;height:18px}

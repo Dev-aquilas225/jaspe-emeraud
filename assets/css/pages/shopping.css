@@ -107,6 +107,7 @@
 .sh-aud__card[data-tone="shop"] .check-list > li::after{border-color:var(--white)}
 .sh-aud__media{position:relative}
 .sh-aud__photo.media{width:100%}
+.sh-aud__photo img{object-position:46% 50%} /* 16:9 classroom photo in a 3:4 arch: keep the pupils at their desks centred */
 .sh-aud__sticker{position:absolute;right:-10px;bottom:-18px;--size:clamp(96px,8vw,124px)}
 @media (max-width:1023px){.sh-aud__sticker{right:14px}}
 

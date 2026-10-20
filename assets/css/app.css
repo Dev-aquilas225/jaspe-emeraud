@@ -27,6 +27,8 @@
   /* Couleur des erreurs (bordures, icônes) — le texte d’erreur garde la couleur du texte. */
   --jeg-danger: var(--sommet-red, #E5262F);
 }
+/* Téléphones : bouton un peu plus compact (cible tactile toujours ≥ 44 px) */
+@media (max-width: 599px) { :root { --wa-size: 52px; --wa-gap: 14px; } }
 /* Page sans bouton WhatsApp flottant (<body data-no-wa-float>) */
 body[data-no-wa-float] { --float-offset: var(--wa-gap); }
 
@@ -436,8 +438,11 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
  * PROFESSEURS — [data-teachers] (+ fiches de secours .teacher--role)
  * ========================================================================= */
 .teachers {
-  display: grid; gap: clamp(14px, 2vw, 24px);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  /* 300px min, at most 3 columns: 3 sheet teachers fill the row, 6 role cards make 3 + 3,
+     a filtered single card keeps a third of the width */
+  --teachers-gap: clamp(14px, 2vw, 24px);
+  display: grid; gap: var(--teachers-gap);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(300px, (100% - 2 * var(--teachers-gap)) / 3)), 1fr));
 }
 .teacher {
   position: relative; isolation: isolate;
@@ -624,6 +629,48 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
 }
 .gallery--rail:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: var(--radius, 20px); }
 
+/* Sans JS (ou avant qu’app.js n’ajoute .gallery) : les figures statiques restent une galerie.
+   - défaut : rangées « justifiées » en CSS pur (hauteur fixe --row, largeur = ratio des attributs
+     width/height de l’image, légende en pastille) ;
+   - .gallery--rail : rail horizontal aimanté (images à hauteur --row, légende sous l’image).
+   Spécificité nulle (:where) : un repli local dans le CSS de page garde toujours la main. */
+:where([data-gallery]:not(.gallery)) { display: flex; gap: clamp(8px, 1.2vw, 14px); }
+:where([data-gallery]:not(.gallery)) > figure { margin: 0; min-width: 0; }
+:where([data-gallery]:not(.gallery)) img { display: block; max-width: none; object-fit: cover; border-radius: var(--radius, 20px); }
+/* défaut : rangées justifiées */
+:where([data-gallery]:not(.gallery, .gallery--rail)) { --row: clamp(150px, 20vw, 260px); flex-wrap: wrap; }
+:where([data-gallery]:not(.gallery, .gallery--rail))::after { content: ""; flex-grow: 9999; }
+:where([data-gallery]:not(.gallery, .gallery--rail)) > figure {
+  position: relative; flex: 1 1 auto; height: var(--row); max-width: 100%;
+  overflow: hidden; border-radius: var(--radius, 20px); background: var(--surface);
+}
+:where([data-gallery]:not(.gallery, .gallery--rail)) > figure img { width: auto; min-width: 100%; height: 100%; border-radius: 0; }
+:where([data-gallery]:not(.gallery, .gallery--rail)) figcaption {
+  position: absolute; left: 12px; bottom: 12px; z-index: 1; max-width: calc(100% - 24px);
+  padding: 7px 12px; border-radius: 999px; background: var(--surface); color: var(--surface-fg);
+  font: 600 11.5px/1.25 var(--font-body); letter-spacing: .08em; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* rail */
+:where([data-gallery].gallery--rail:not(.gallery)) {
+  --row: clamp(200px, 30vw, 420px);
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+:where([data-gallery].gallery--rail:not(.gallery)) > figure { flex: none; scroll-snap-align: start; }
+:where([data-gallery].gallery--rail:not(.gallery)) > figure img { width: auto; height: var(--row); }
+:where([data-gallery].gallery--rail:not(.gallery)) figcaption {
+  margin-top: 8px; font: 600 11.5px/1.25 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2);
+}
+@media (max-width: 599px) {
+  /* téléphone : grille 2 colonnes de vignettes carrées (évite les bandeaux très recadrés) */
+  :where([data-gallery]:not(.gallery, .gallery--rail)) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :where([data-gallery]:not(.gallery, .gallery--rail))::after { display: none; }
+  :where([data-gallery]:not(.gallery, .gallery--rail)) > figure { height: auto; aspect-ratio: 1; }
+  :where([data-gallery]:not(.gallery, .gallery--rail)) > figure img { width: 100%; min-width: 0; }
+  :where([data-gallery]:not(.gallery, .gallery--rail)) figcaption { left: 8px; bottom: 8px; max-width: calc(100% - 16px); padding: 5px 9px; font-size: 10px; letter-spacing: .06em; }
+}
+
 /* ===========================================================================
  * VISIONNEUSE PHOTO (lightbox) — toujours sombre (data-tone="ink")
  * ========================================================================= */
@@ -736,6 +783,8 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
 .wa-float:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 .wa-float:not(.is-ready),
 .wa-float.is-hidden,
+.wa-float.is-away,
+.wa-float.is-dodging,
 html.has-modal .wa-float,
 html.menu-open .wa-float,
 html.is-menu-open .wa-float {

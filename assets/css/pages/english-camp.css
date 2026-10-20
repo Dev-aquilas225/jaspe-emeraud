@@ -101,6 +101,7 @@ html.js [data-split]:not(.is-in) .ec-strike::after{clip-path:inset(0 100% 0 0)}
 @media (min-width:900px){.ec-intro__media{margin-right:0}}
 .ec-intro__media > .sticker{--sx:-12px;--sr:auto;--sb:6%}
 @media (min-width:900px){.ec-intro__media > .sticker{--sx:-6%}}
+@media (max-width:599px){.ec-intro__media > .sticker{--sx:10px;--sb:4%}} /* keep the ring inside the 16px gutter */
 
 /* ---------- 02 Formats (interactive cards) ---------- */
 .ec-format{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:14px;min-width:0;padding:clamp(24px,2.4vw,36px);border-radius:var(--radius-lg);background:var(--surface);color:var(--surface-fg);transition:transform .6s var(--ease-out),color .4s var(--ease-out)}

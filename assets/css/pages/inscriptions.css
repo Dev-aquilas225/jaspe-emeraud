@@ -42,7 +42,8 @@
 .ins-date--a{left:-14px;bottom:24%;--r:-6deg}
 .ins-date--b{right:-6px;top:14%;--r:5deg;--fd:-2s}
 .ins-date--c{right:16%;bottom:0;--r:-3deg;--fd:-4s}
-.ins-hero__sticker{position:absolute;left:-30px;top:-46px;--size:clamp(100px,9vw,132px)}
+/* desktop: tucked onto the photo corner, below the h1 line (« Prochaines » runs over the media column) */
+.ins-hero__sticker{position:absolute;left:-30px;top:-8px;--size:clamp(100px,9vw,132px)}
 @media (max-width:959px){
   .ins-hero__media{max-width:620px;padding-right:0}
   .ins-date--a{left:6px}

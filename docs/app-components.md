@@ -28,7 +28,7 @@ Do not restyle them per page; if something looks wrong inside a tone, fix the to
 | FR/EN switch | `button[data-lang="fr|en"]` anywhere. Toggles `html.lang-en`, `html[lang]`, `aria-pressed`, `<title data-en>`, `[data-ph-fr/en]` placeholders, `<option|optgroup data-fr data-en>`, `[data-aria-fr/en]` aria-labels, `[data-alt-fr/en]` alts, `[data-title-fr/en]` titles. Stored in `localStorage['je-lang']`. Dispatches `document` event **`jeg:lang`** (`detail.lang`). |
 | Theme toggle | `[data-theme-toggle]` button. Toggles `html.dark`, sets `aria-pressed`, stores `localStorage['je-theme']` (`dark`/`light`), circular View-Transition from the button. Follows the OS live while nothing is stored. Dispatches `jeg:theme`. |
 | WhatsApp links | every `.js-wa` gets its `wa.me` URL in the current language (see §3). |
-| Floating WhatsApp button | `.wa-float` injected bottom-right, shown after `jeg:ready`, hidden while the footer is visible, a modal is open or the mobile menu is open (`html.menu-open`). Opt out per page: `<body data-no-wa-float>`. |
+| Floating WhatsApp button | `.wa-float` injected bottom-right, shown after `jeg:ready` once the visitor has scrolled past the top of the page (`.is-away` while the hero fills the screen), hidden while the footer is visible, a modal is open or the mobile menu is open (`html.menu-open`). It never covers a tap target: while a link, button, field, label, gallery photo or any `[data-wa-dodge]` element sits under it, it fades out (`.is-dodging`) and comes back as soon as the corner is free (it stays put while hovered/focused). Opt out per page: `<body data-no-wa-float>`. |
 | Modals | registration, teacher application and photo viewer are **injected** in `<body>` on first use: `role="dialog"`, `aria-modal`, focus trap, Esc, outside click, focus returned to the trigger, scroll lock (`html.is-scroll-locked`, scrollbar width in `--jeg-scrollbar`), the rest of the page made `inert`, stackable. While one is open: `html.has-modal`. Dispatches `jeg:modal`. |
 | Motion engine | injected/replaced content is passed to `window.JEG.refresh(el)`; page jumps use `JEG.scrollTo` / `JEG.navigate` when available. |
 
@@ -52,7 +52,10 @@ Lang switch & theme toggle (header partial):
 
 Any `<button>` (or `<a>`) with `.js-reg` opens the registration modal. `data-offer` preselects the
 offer; the modal's colour panel takes the offer's pôle colour (`data-tone`) and a
-« Pôle 0X · … » pill. Without `data-offer` (header CTA) the first offer is preselected and the panel is emerald.
+« Pôle 0X · … » pill. Without `data-offer` (header / mobile-menu CTA) the page's offer is used:
+`<body data-reg-offer="training">` (set on training → `training`, langues → `langues`,
+editions → `edition-club`, english-camp → `camp-seances`); on the other pages the first offer is
+preselected and the panel stays emerald until the visitor picks an offer.
 
 | `data-offer` | Shown label (FR) | From (FCFA) | Pôle → modal tone |
 |---|---|---|---|
@@ -68,7 +71,7 @@ offer; the modal's colour panel takes the offer's pôle colour (`data-tone`) and
 language (any spelling: « Espagnol », `spanish`…; unknown → « Autre langue »).
 
 ```html
-<!-- header CTA (no offer) -->
+<!-- header CTA (no offer → <body data-reg-offer>, else neutral) -->
 <button type="button" class="btn btn--primary btn--sm js-reg"><span class="fr">S’inscrire</span><span class="en">Register</span></button>
 
 <!-- English Camp -->
@@ -136,8 +139,9 @@ Keep a real `wa.me` `href` in the markup (works without JS). Other real messages
 `.btn--wa` (defined in app.css) = `.btn` in WhatsApp green with ink text; use it with `.btn--primary`.
 
 **Floating button / back-to-top.** The WhatsApp button sits bottom-right
-(`--wa-size: 58px`, `--wa-gap: 18px`). Anything else floating bottom-right (e.g. `[data-to-top]`)
-must use `bottom: var(--float-offset)` (= 88px, or 18px on pages with `data-no-wa-float`).
+(`--wa-size: 58px`, `--wa-gap: 18px`; 52px / 14px below 600px). Anything else floating bottom-right (e.g. `[data-to-top]`)
+must use `bottom: var(--float-offset)` (= 88px / 78px, or `--wa-gap` on pages with `data-no-wa-float`).
+It hides itself over tap targets (see §0); add `data-wa-dodge` to a decorative element it must not cover either.
 
 ## 4. Copy button — `.js-copy[data-copy]`
 
@@ -337,6 +341,9 @@ Live cards rendered by app.js: `article.teacher.is-live[data-pole]` → `.teache
 photo or initials, ringed in the pôle colour + outlined index `01`), `.teacher__name`,
 `.teacher__subjects` chips, `.teacher__bio` (4 lines + « Voir plus »), `.teacher__strengths`
 (« Points forts » chips), `.teacher__pole` tag (only if the POLE column is filled).
+In English: MATIERES / POINTS FORTS / PRESENTATION use their « … EN » columns when filled; without them,
+known strengths are translated by app.js (`STRENGTHS`: Assiduité → Diligence, Rigueur → Rigour…) and the
+bio stays in French (marked `lang="fr"`). The grid (`.teachers`) has 300px-min columns, **at most 3**.
 Card colour = POLE column, else derived from subjects (languages → `langues`).
 Only rows with `AFFICHAGE = oui` are shown; hours/rates columns are never displayed.
 
@@ -376,6 +383,12 @@ Layout: default = justified rows (each row fills the width, ratios kept — give
 real `width`/`height`). Add `.gallery--rail` for a horizontal snap rail (`tabindex="0"` + aria-label).
 A gallery with no figure (and nothing in the sheet) is `hidden`, together with its closest
 `[data-gallery-block]` wrapper (use it for an « En images » heading).
+
+**No JS** (or before app.js adds `.gallery`): app.css lays the static figures out by itself —
+`[data-gallery]` = CSS-only justified rows (fixed `--row` height, width from the `<img>`
+`width`/`height` ratio, caption pill), `[data-gallery].gallery--rail` = horizontal snap rail
+(images `--row` high, caption under the image). These rules have zero specificity (`:where`),
+so a local fallback in page CSS (e.g. a grid) always wins; you don’t need one.
 
 ```html
 <!-- english-camp.html -->
@@ -419,7 +432,9 @@ A gallery with no figure (and nothing in the sheet) is `hidden`, together with i
 | Hook | Use |
 |---|---|
 | `--float-offset` | bottom offset for any other bottom-right floating UI (back-to-top). |
-| `--wa-size`, `--wa-gap` | floating WhatsApp button geometry. |
+| `--wa-size`, `--wa-gap` | floating WhatsApp button geometry (smaller below 600px). |
+| `.wa-float.is-away` / `.is-dodging` / `.is-hidden`, `[data-wa-dodge]` | float states (top of page / over a tap target / footer visible); opt-in “don’t cover me” marker. |
+| `body[data-reg-offer]` | offer preselected by header/mobile-menu `.js-reg` buttons without `data-offer`. |
 | `.btn--wa` | WhatsApp-green button variant. |
 | `html.has-modal`, `html.is-scroll-locked`, `--jeg-scrollbar` | modal open state (pad a fixed header with `padding-right: var(--jeg-scrollbar)`). |
 | `.form`, `.form__row`, `.field`, `.field__label`, `.field__hint`, `.check` + `.check__box` + `.check__text`, `.form__actions`, `.form__note`, `.form--inline`, `.form-ok`, `.form-err` | form system (works in any tone). |
@@ -484,7 +499,10 @@ sans rien toucher au site.
   (ex. `ANGLAIS & LITTERATURE`). Les accents et majuscules des matières connues sont corrigés
   automatiquement et traduits en anglais (Anglais, Espagnol, Allemand, Chinois (mandarin), Littérature,
   Français, Bureautique, Lecture, Écriture).
-- **POINTS FORTS** : séparés par des virgules (ex. `Rigueur, excellence, assiduité`).
+- **POINTS FORTS** : séparés par des virgules (ex. `Rigueur, excellence, assiduité`). Les points forts
+  courants sont traduits automatiquement en anglais ; pour les autres et pour la présentation, ajoutez
+  les colonnes **POINTS FORTS EN** et **PRESENTATION EN** (sinon le texte français s’affiche aussi en anglais).
+  Les accents de la présentation sont affichés tels quels : corrigez-les dans le tableau.
 - **POLE** (facultatif) : par ex. `Langues étrangères`, `English Camp`, `Training / Sommet de l'Excellence`,
   `Jaspe'e Editions`, `Shopping` — affiché en étiquette de couleur sur la fiche.
 - **PHOTO** (facultatif) : lien de partage Google Drive de la photo (« Toute personne disposant du

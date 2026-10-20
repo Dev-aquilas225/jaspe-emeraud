@@ -767,13 +767,19 @@
     }
     function hasOption(select, v) { return !!v && $$('option', select).some(function (o) { return o.value === v; }); }
 
+    /* Sans data-offer (bouton « S’inscrire » de l’en-tête / du menu mobile) : l’offre du pôle
+       de la page (<body data-reg-offer="training">), sinon la première offre, fenêtre émeraude
+       (neutre) jusqu’à ce que le visiteur choisisse une offre. */
     function open(offer, trigger, langPref) {
       build();
       if (!done.hidden) showForm();
-      if (hasOption(form.elements.offre, offer)) form.elements.offre.value = offer;
+      if (!offer) offer = document.body.getAttribute('data-reg-offer') || '';
+      var neutral = !hasOption(form.elements.offre, offer);
+      if (!neutral) form.elements.offre.value = offer;
       if (langPref) langPref = LANGS.indexOf(subjectKey(langPref)) > -1 ? subjectKey(langPref) : 'autre';
       if (hasOption(form.elements.langue, langPref)) form.elements.langue.value = langPref;
       sync(false);
+      if (neutral && form.elements.offre.selectedIndex === 0) tint('');
       Modal.open(el, { trigger: trigger });
     }
 
@@ -1152,6 +1158,20 @@
     lecture: ['Lecture', 'Reading'], ecriture: ['Écriture', 'Writing']
   };
   var LANGS = ['anglais', 'espagnol', 'allemand', 'chinois'];
+  /* Points forts courants (colonne POINTS FORTS) : accents corrigés et traduction anglaise
+     quand le tableau n’a pas de colonne POINTS FORTS EN. Clé = texte sans accents ni espaces. */
+  var STRENGTHS = {
+    assiduite: ['Assiduité', 'Diligence'], excellence: ['Excellence', 'Excellence'], rigueur: ['Rigueur', 'Rigour'],
+    discipline: ['Discipline', 'Discipline'], travail: ['Travail', 'Hard work'],
+    travailetdiscipline: ['Travail et discipline', 'Hard work and discipline'],
+    accompagnementenligne: ['Accompagnement en ligne', 'Online support'],
+    personneletenequipe: ['Personnel et en équipe', 'One-to-one and group work'],
+    travailenequipe: ['Travail en équipe', 'Teamwork'], ponctualite: ['Ponctualité', 'Punctuality'],
+    patience: ['Patience', 'Patience'], pedagogie: ['Pédagogie', 'Teaching skills'], ecoute: ['Écoute', 'Listening'],
+    bienveillance: ['Bienveillance', 'Kindness'], creativite: ['Créativité', 'Creativity'],
+    experience: ['Expérience', 'Experience'], professionnalisme: ['Professionnalisme', 'Professionalism'],
+    serieux: ['Sérieux', 'Reliability'], disponibilite: ['Disponibilité', 'Availability'], motivation: ['Motivation', 'Motivation']
+  };
   var POLES_EN = {
     'langues étrangères': 'Foreign languages', 'training / sommet de l\'excellence': 'Training / Excellence Summit',
     'formation': 'Training', 'sommet de l\'excellence': 'Excellence Summit', 'jaspe\'e editions': "Jaspe'e Editions",
@@ -1336,17 +1356,23 @@
         t.keys.map(function (k) { var L = self.label(k); return '<li>' + bi(L[0], L[1]) + '</li>'; }).join('') + '</ul>'
       : '';
     var bioId = uid('bio');
+    /* Sans colonne PRESENTATION EN, la présentation reste en français (lang="fr" pour les lecteurs d’écran). */
     var bio = (t.bfr || t.ben)
-      ? '<p class="teacher__bio" id="' + bioId + '">' + bi(t.bfr || t.ben, t.ben || t.bfr) + '</p>' +
+      ? '<p class="teacher__bio" id="' + bioId + '"' + (t.ben ? '' : ' lang="fr"') + '>' + bi(t.bfr || t.ben, t.ben || t.bfr) + '</p>' +
         '<button type="button" class="teacher__more" aria-expanded="false" aria-controls="' + bioId + '" hidden>' + biHtml('Voir plus', 'Read more') + '</button>'
       : '';
     var chips = function (arr, cls) { return '<ul class="teacher__chips' + (cls ? ' ' + cls : '') + '">' + arr.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul>'; };
     var ch = '';
     if (t.cfr.length || t.cen.length) {
+      /* Colonne EN remplie : deux listes ; sinon chaque point fort connu est traduit (STRENGTHS). */
+      var known = function (c) { return STRENGTHS[key(c)]; };
       ch = '<div class="teacher__strengths"><p class="teacher__label">' + biHtml('Points forts', 'Strengths') + '</p>' +
         ((t.cen.length && t.cen.join('|') !== t.cfr.join('|') && t.cfr.length)
           ? chips(t.cfr, 'fr') + chips(t.cen, 'en')
-          : chips(t.cfr.length ? t.cfr : t.cen)) + '</div>';
+          : '<ul class="teacher__chips">' + (t.cfr.length ? t.cfr : t.cen).map(function (c) {
+              var d = known(c);
+              return d ? '<li>' + bi(d[0], d[1]) + '</li>' : '<li>' + esc(c) + '</li>';
+            }).join('') + '</ul>') + '</div>';
     }
     /* Étiquette du pôle : uniquement si la colonne POLE est remplie dans le tableau. */
     var pk = poleKey(t.pole);
@@ -1962,6 +1988,57 @@
         a.classList.toggle('is-hidden', es[0].isIntersecting);
       }, { rootMargin: '0px 0px -12% 0px' }).observe(footer);
     }
+    initFloatDodge(a);
+  }
+
+  /* Le bouton flottant ne cache jamais le contenu utile :
+     - il n’apparaît qu’une fois le haut de page dépassé (.is-away tant que le héros est à l’écran) ;
+     - il s’efface (.is-dodging) quand il recouvrirait une cible cliquable (lien, bouton, champ,
+       photo de galerie…) ou un élément marqué [data-wa-dodge], et revient dès que la zone est libre.
+     Test par document.elementsFromPoint sur une grille 5 × 5 couvrant le bouton (+ 6 px de marge). */
+  function initFloatDodge(a) {
+    var TARGETS = 'a[href],button,input,select,textarea,summary,label,[role="button"],[role="link"],[data-wa-dodge]';
+    var SKIP = '.wa-float,.site-header,.mobile-menu,[data-mobile-menu],.mega,[data-to-top],.jm,.cursor,.scroll-progress';
+    var timer = 0, late = 0;
+    function covers() {
+      if (!document.elementsFromPoint) return false;
+      var cs = getComputedStyle(a), de = document.documentElement;
+      var size = a.offsetHeight || 58;                       /* bouton replié = cercle */
+      var r = de.clientWidth - (parseFloat(cs.right) || 16), b = de.clientHeight - (parseFloat(cs.bottom) || 18);
+      var l = r - size, t = b - size, m = 6, n = 5;
+      for (var i = 0; i < n; i++) {
+        for (var j = 0; j < n; j++) {
+          var x = l - m + (size + 2 * m) * i / (n - 1), y = t - m + (size + 2 * m) * j / (n - 1);
+          var els = document.elementsFromPoint(Math.max(0, x), Math.max(0, Math.min(y, de.clientHeight - 1)));
+          for (var k = 0; k < els.length; k++) {
+            var e = els[k];
+            if (e === document.body || e === de) break;
+            if (e.closest(SKIP)) continue;
+            if (e.closest(TARGETS)) return true;
+          }
+        }
+      }
+      return false;
+    }
+    function check() {
+      timer = 0;
+      var away = (window.pageYOffset || document.documentElement.scrollTop) < Math.min(window.innerHeight * 0.45, 380);
+      a.classList.toggle('is-away', away);
+      /* survolé ou focalisé au clavier : il reste en place */
+      var held = a.matches(':hover') || a === document.activeElement;
+      a.classList.toggle('is-dodging', !away && !held && covers());
+    }
+    function schedule() {
+      if (!timer) timer = setTimeout(check, 90);
+      clearTimeout(late);
+      late = setTimeout(check, 750);                         /* après les révélations au défilement */
+    }
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    window.addEventListener('load', schedule);
+    document.addEventListener('jeg:lang', schedule);
+    document.addEventListener('jeg:ready', schedule);
+    check();
   }
 
   /* ===========================================================================

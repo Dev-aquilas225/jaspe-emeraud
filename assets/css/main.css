@@ -216,12 +216,57 @@ html.dark .site-footer,html.dark [data-tone="ink"]{box-shadow:inset 0 1px 0 var(
 [data-pole="shopping"]{--pole:var(--shop); --pole-fg:var(--shop-ink); --pole-soft:var(--shop-soft); --pole-ink:var(--shop-ink); --pole-2:var(--white); --pole-fill:var(--shop)}
 [data-pole="camp"]{--pole:var(--camp-sky); --pole-fg:var(--camp-navy); --pole-soft:var(--camp-soft); --pole-ink:var(--camp-navy); --pole-2:var(--camp-mint); --pole-fill:var(--camp-gradient)}
 [data-pole="editions"]{--pole:color-mix(in srgb,var(--ed-violet) 88%,var(--ed-ink)); --pole-fg:var(--white); --pole-soft:var(--ed-lilac); --pole-ink:var(--ed-ink); --pole-2:var(--ed-violet); --pole-fill:var(--ed-violet)}
+/* AA-safe pôle accents for light / dark neutral backgrounds (read by data-accent="pole" and
+   data-tone="pole-soft"): --pa ≥3:1 on white, mist & --pole-soft and ≥4.5:1 under white text ·
+   --pa-ink ≥4.5:1 on white, mist & --pole-soft · --pa-dk ≥4.5:1 on the dark neutrals, with
+   --pole-ink text on it. --pole / --pole-fg (vivid fill + its text) are AA in both modes. */
+[data-pole="training"]{--pa:var(--sommet-red); --pa-ink:color-mix(in srgb,var(--sommet-red) 80%,var(--sommet-black)); --pa-dk:color-mix(in srgb,var(--sommet-red) 70%,var(--white))}
+[data-pole="langues"]{--pa:color-mix(in srgb,var(--langues) 75%,var(--langues-ink)); --pa-ink:color-mix(in srgb,var(--langues) 65%,var(--langues-ink)); --pa-dk:var(--langues)}
+[data-pole="shopping"]{--pa:color-mix(in srgb,var(--shop) 45%,var(--shop-ink)); --pa-ink:color-mix(in srgb,var(--shop) 45%,var(--shop-ink)); --pa-dk:var(--shop)}
+[data-pole="camp"]{--pa:color-mix(in srgb,var(--camp-sky) 55%,var(--camp-navy)); --pa-ink:color-mix(in srgb,var(--camp-sky) 45%,var(--camp-navy)); --pa-dk:var(--camp-sky)}
+[data-pole="editions"]{--pa:color-mix(in srgb,var(--ed-violet) 84%,var(--ed-ink)); --pa-ink:color-mix(in srgb,var(--ed-violet) 70%,var(--ed-ink)); --pa-dk:color-mix(in srgb,var(--ed-violet) 70%,var(--white))}
+
+/* Pôle accent on a NEUTRAL section: <section class="section" data-tone="white|mist" data-pole="camp" data-accent="pole">
+   keeps the white/mist background but takes the pôle colour for accents, buttons, chips, highlighter, focus.
+   (Ignored on coloured tones, which already have their own accent.) */
+[data-accent="pole"][data-pole]:is(:not([data-tone]),[data-tone="white"],[data-tone="mist"]){
+  --accent:var(--pa); --accent-ink:var(--pa-ink); --accent-fg:var(--white); --accent-2:var(--pole);
+  --btn-bg:var(--pole); --btn-fg:var(--pole-fg); --btn-hover-bg:var(--ink); --btn-hover-fg:var(--white);
+  --btn-accent-bg:var(--pole-ink); --btn-accent-fg:var(--white);
+  --chip-bg:var(--pole-soft); --chip-fg:var(--pole-ink);
+  --hl-bg:var(--pole); --hl-fg:var(--pole-fg);
+  --focus:var(--pa-ink);
+}
+html.dark [data-accent="pole"][data-pole]:is(:not([data-tone]),[data-tone="white"],[data-tone="mist"]){
+  --accent:var(--pa-dk); --accent-ink:var(--pa-dk); --accent-fg:var(--pole-ink); --accent-2:var(--pole);
+  --btn-bg:var(--pole); --btn-fg:var(--pole-fg); --btn-hover-bg:var(--white); --btn-hover-fg:var(--ink);
+  --btn-accent-bg:var(--white); --btn-accent-fg:var(--ink);
+  --chip-bg:color-mix(in srgb,var(--pa-dk) 16%,transparent); --chip-fg:var(--pa-dk);
+  --hl-bg:var(--pole); --hl-fg:var(--pole-fg);
+  --focus:var(--pa-dk);
+}
+/* Soft pôle tone (light in both modes, like the other colour worlds):
+   <section class="section" data-tone="pole-soft" data-pole="langues"> (data-pole on itself or an ancestor) */
+[data-tone="pole-soft"]{
+  --bg:var(--pole-soft,var(--mist)); --bg-image:none;
+  --fg:var(--pole-ink,var(--ink)); --fg-2:color-mix(in srgb,var(--pole-ink,var(--ink)) 80%,var(--pole-soft,var(--mist)));
+  --accent:var(--pa,var(--em-600)); --accent-ink:var(--pa-ink,var(--em-600)); --accent-fg:var(--white); --accent-2:var(--pole,var(--em-400));
+  --surface:var(--white); --surface-fg:var(--pole-ink,var(--ink)); --surface-fg-2:color-mix(in srgb,var(--pole-ink,var(--ink)) 78%,var(--white));
+  --border:color-mix(in srgb,var(--pole-ink,var(--ink)) 16%,transparent);
+  --btn-bg:var(--pole,var(--em-600)); --btn-fg:var(--pole-fg,var(--white)); --btn-hover-bg:var(--pole-ink,var(--ink)); --btn-hover-fg:var(--white);
+  --btn-accent-bg:var(--white); --btn-accent-fg:var(--pole-ink,var(--ink));
+  --chip-bg:var(--white); --chip-fg:var(--pole-ink,var(--ink));
+  --hl-bg:var(--pole,var(--em-400)); --hl-fg:var(--pole-fg,var(--em-900));
+  --focus:var(--pa-ink,var(--em-600));
+  color-scheme:light;
+}
+[data-tone="pole-soft"] .card:not([data-tone]){--chip-bg:var(--pole-soft,var(--mist));--chip-fg:var(--pole-ink,var(--ink))}
 
 /* ---------- 02 · Reset & base ---------- */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:calc(var(--header-h) + 24px);interpolate-size:allow-keywords}
 body{margin:0;min-height:100vh;background-color:var(--bg);color:var(--fg);font:400 var(--fs-body)/1.6 var(--font-body);font-feature-settings:"cv11" 1,"ss03" 1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow-x:clip;transition:background-color .4s var(--ease-out),color .4s var(--ease-out)}
-main{display:block;padding-top:var(--header-h)} /* the header is a fixed solid bar: content starts below it */
+main{display:block;padding-top:var(--header-h);overflow-x:clip} /* the header is a fixed solid bar: content starts below it; clip (not hidden) keeps position:sticky working while stray rotated decor never widens the page */
 main:focus{outline:none}
 img,svg,video,canvas,picture{display:block;max-width:100%}
 img{height:auto}
@@ -284,8 +329,10 @@ h4,h5,h6{font-size:var(--fs-h4);font-weight:700;line-height:1.15;letter-spacing:
 :is(h1,h2,h3,h4,.display-xxl,.hero-title,.display,.h1,.h2,.h3,.h4,.page-hero__title,.section-head__title,.cta-band__title,.footer-cta__title,.pull-quote,.mega__title,.card__title,.pole-card__title,.ticker,.stat__num) em{font-style:normal;color:var(--accent)}
 em.plain{color:inherit}
 /* highlighter pill behind a word: <span class="hl">mot</span> */
-.hl{--hl-delay:520ms;padding:0 .12em;margin:0 -.02em;border-radius:.18em;color:var(--hl-fg);background:linear-gradient(var(--hl-bg),var(--hl-bg)) 0 55%/100% 100% no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size .9s var(--ease-out) calc(var(--delay,0ms) + var(--hl-delay)),color .3s calc(var(--delay,0ms) + var(--hl-delay))}
-html.js [data-split]:not(.is-in) .hl,html.js .hl[data-reveal]:not(.is-in){background-size:0 100%;color:inherit}
+/* pill covers 78% of the glyph box, sitting low (82%) so it never paints over the line above
+   at tight display line-heights (.86–.95). Tune per use with --hl-h / --hl-y. */
+.hl{--hl-delay:520ms;padding:0 .12em;margin:0 -.02em;border-radius:.18em;color:var(--hl-fg);background:linear-gradient(var(--hl-bg),var(--hl-bg)) 0 var(--hl-y,82%)/100% var(--hl-h,78%) no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size .9s var(--ease-out) calc(var(--delay,0ms) + var(--hl-delay)),color .3s calc(var(--delay,0ms) + var(--hl-delay))}
+html.js [data-split]:not(.is-in) .hl,html.js .hl[data-reveal]:not(.is-in){background-size:0 var(--hl-h,78%);color:inherit}
 html.js .hl[data-reveal]{opacity:1 !important;transform:none !important}
 /* hand-drawn swash under a word: <span class="swash">mot</span> (draws itself in when its
    [data-split] / [data-reveal] parent is revealed; colour = --swash, default --accent-2) */
@@ -437,11 +484,18 @@ html.js .swash[data-reveal]{opacity:1 !important;transform:none !important}
 .link-underline{color:inherit;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/0 1.5px no-repeat;transition:background-size .5s var(--ease-out)}
 .link-underline:hover,.link-underline:focus-visible{background-size:100% 1.5px}
 .stretched-link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
-:where(.has-stretched,.pole-card) :is(.btn,.lchip,button,a:not(.stretched-link),input,select,label){position:relative;z-index:2}
+:where(.has-stretched,.pole-card) :is(.btn,.lchip,button:not(.stretched-link),a:not(.stretched-link),input,select,label){position:relative;z-index:2}
+/* a .btn can itself be the stretched link: it stays static so its ::after covers the whole card
+   (the liquid fill would escape too, so it becomes a plain colour change) */
+.btn.stretched-link{position:static;z-index:auto;isolation:auto;overflow:visible;transition:background-color .45s var(--ease-out),color .45s var(--ease-out),border-color .45s var(--ease-out),translate .6s var(--ease-out)}
+.btn.stretched-link::before{display:none}
+.btn.stretched-link:is(:hover,:focus-visible){background:var(--_hbg)}
+.btn.stretched-link::after{border-radius:0}
 
 /* ---------- 08 · Stickers, icon badges, brand mark ---------- */
 /* rotating circular-text sticker — markup in docs (unique <path id> per page) */
-.sticker{--size:clamp(104px,10vw,144px);position:relative;display:grid;place-items:center;width:var(--size);height:var(--size);border-radius:50%;background:var(--sticker-bg,var(--btn-accent-bg));color:var(--sticker-fg,var(--btn-accent-fg));rotate:var(--tilt,-8deg);flex:none;z-index:3}
+.sticker{--size:clamp(104px,10vw,144px);position:relative;display:grid;place-items:center;width:var(--size);height:var(--size);border-radius:50%;background:var(--sticker-bg,var(--btn-accent-bg));color:var(--sticker-fg,var(--btn-accent-fg));rotate:var(--tilt,-8deg);flex:none;z-index:3;pointer-events:none}
+/* stickers are decorative (aria-hidden): they never take clicks from the buttons/links they overlap */
 .sticker[data-pole]{--sticker-bg:var(--pole-fill);--sticker-fg:var(--pole-fg)}
 .sticker--ink{--sticker-bg:var(--ink);--sticker-fg:var(--white)}
 .sticker--white{--sticker-bg:var(--white);--sticker-fg:var(--ink)}
@@ -455,7 +509,11 @@ html.js .swash[data-reveal]{opacity:1 !important;transform:none !important}
 .sticker--sm .sticker__core{font-size:1rem}
 .sticker--lg{--size:clamp(130px,13vw,184px)}
 @keyframes jeg-spin{to{transform:rotate(360deg)}}
-.icon-badge{display:grid;place-items:center;width:var(--size,52px);aspect-ratio:1;border-radius:50%;background:var(--chip-bg);color:var(--accent-ink);flex:none}
+/* explicit height: in a flex column the 46% SVG would otherwise resolve to its 150px default
+   and stretch the badge into an oval. Size it with --size only (never width/height). */
+.icon-badge{display:grid;place-items:center;width:var(--size,52px);height:var(--size,52px);aspect-ratio:1;border-radius:50%;background:var(--chip-bg);color:var(--accent-ink);flex:none}
+:where(.card) > .icon-badge{align-self:flex-start}
+:where(.card.text-center,.card.center) > .icon-badge{align-self:center}
 .icon-badge .icon{width:46%;height:46%}
 .icon-badge[data-pole]{background:var(--pole-fill);color:var(--pole-fg)}
 .icon-badge--solid{background:var(--accent);color:var(--accent-fg)}
@@ -760,7 +818,7 @@ html.menu-open,html.is-locked{overflow:hidden}
 /* ---------- 17 · Components ---------- */
 /* section head */
 .section-head{display:grid;gap:clamp(18px,2.6vw,36px);margin-bottom:clamp(40px,5.5vw,80px);align-items:end}
-@media (min-width:960px){.section-head--split{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}.section-head--split > :last-child{justify-self:end;max-width:46ch}}
+@media (min-width:960px){.section-head--split{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}.section-head--split > :last-child:where(:not(:first-child)){justify-self:end;max-width:46ch}}
 .section-head > .eyebrow{margin:0}
 .section-head > .eyebrow + *{margin-top:calc(clamp(14px,1.6vw,22px) - clamp(18px,2.6vw,36px))}
 .section-head__title{font:800 var(--fs-h2)/.96 var(--font-display);letter-spacing:-.04em;max-width:16ch;text-wrap:balance}
@@ -879,12 +937,20 @@ html.js .agenda__line::after{transform:scaleY(var(--draw,0))}
 .cta-band__title{font:800 var(--fs-h1)/.92 var(--font-display);letter-spacing:-.045em;max-width:14ch;text-wrap:balance}
 .cta-band .lead{margin-top:clamp(14px,1.6vw,22px);color:var(--fg-2)}
 .cta-band__actions{display:flex;flex-wrap:wrap;gap:12px}
-.cta-band__sticker{position:absolute;right:clamp(14px,3vw,48px);top:clamp(14px,3vw,40px)}
+.cta-band__sticker{position:absolute;right:clamp(14px,3vw,48px);top:clamp(14px,3vw,40px);pointer-events:none}
 .cta-band--center{text-align:center}
 .cta-band--center .cta-band__grid{grid-template-columns:1fr;justify-items:center}
 .cta-band--center :is(.cta-band__title,.lead){margin-inline:auto}
 .cta-band--center .cta-band__actions{justify-content:center}
-@media (max-width:959px){.cta-band__sticker{position:relative;right:auto;top:auto;margin-bottom:20px}}
+/* < 960px the sticker stays absolute (top-right, smaller); the grid gets top room when a sticker is present
+   (zero-specificity :where so page CSS can tune --size / padding) */
+@media (max-width:959px){
+  .cta-band__sticker{right:clamp(12px,3vw,28px);top:clamp(12px,3vw,28px);margin:0}
+  .cta-band__sticker .sticker{--size:88px}
+  .cta-band__sticker .sticker__core{font-size:.95rem}
+  .cta-band__sticker .sticker__core .icon{width:24px;height:24px}
+  :where(.cta-band:has(> .cta-band__sticker)) > .cta-band__grid{padding-top:72px}
+}
 
 /* panel = rounded box with a tone: <div class="panel" data-tone="emerald"> */
 .panel{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--radius-lg);padding:clamp(28px,5vw,80px)}
@@ -897,6 +963,7 @@ html.js .agenda__line::after{transform:scaleY(var(--draw,0))}
 .pillar__num{font:800 1.5rem/1 var(--font-display);letter-spacing:-.04em;color:var(--accent);padding-top:.05em}
 .pillar__title{font:700 clamp(1.25rem,1.7vw,1.5rem)/1.15 var(--font-display);letter-spacing:-.025em;margin-bottom:4px}
 .pillar p{color:var(--fg-2)}
+.pillars--row .pillar{align-content:start} /* equal-height row: keep numbers/titles top-aligned */
 @media (min-width:1100px){.pillars--row{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(20px,2.4vw,40px);border-top:0}.pillars--row .pillar{grid-template-columns:1fr;border-top:1.5px solid var(--border);border-bottom:0;padding-top:24px}}
 
 /* institutions (B2B) — inside a section with data-tone="emerald" */
@@ -912,6 +979,13 @@ html.js .agenda__line::after{transform:scaleY(var(--draw,0))}
 .b2b__list > li:hover{transform:translateY(-4px)}
 .b2b__ico{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--accent-fg)}
 .b2b__ico .icon{width:20px;height:20px}
+
+/* surfaces that carry their own data-tone paint that colour world (the tone wins over
+   the default --surface look): <div class="stat" data-tone="camp">, <a class="float-chip"
+   data-tone="sommet">, <ul class="b2b__list"><li data-tone="editions"> */
+.stat[data-tone],.float-chip[data-tone],.b2b__list > li[data-tone]{background-color:var(--bg);background-image:var(--bg-image);color:var(--fg)}
+.stat[data-tone] .stat__sub,.b2b__list > li[data-tone] :is(p,small){color:var(--fg-2)}
+.float-chip[data-tone] .chip__dot{color:var(--accent-2)}
 
 /* ---------- 18 · Loader (first visit of the session) ---------- */
 .loader{display:none}
@@ -1087,7 +1161,7 @@ html.js [data-fill] .fill-w{opacity:.16}
   html.js [data-reveal="clip"]:not(.is-in),html.js [data-reveal="mask"]:not(.is-in){clip-path:none !important}
   html.js [data-reveal="mask"]:not(.is-in) img{transform:none !important}
   html.js [data-split] .split-i,html.js [data-split] .split-c{transform:none !important}
-  html.js [data-split]:not(.is-in) .hl,html.js .hl[data-reveal]:not(.is-in){background-size:100% 100% !important;color:var(--hl-fg) !important}
+  html.js [data-split]:not(.is-in) .hl,html.js .hl[data-reveal]:not(.is-in){background-size:100% var(--hl-h,78%) !important;color:var(--hl-fg) !important}
   html.js [data-fill] .fill-w{opacity:1 !important}
   .draw-shape{stroke-dashoffset:0 !important}
   html.js .agenda__line::after{transform:none}

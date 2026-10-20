@@ -13,7 +13,8 @@
  *   window.JEG.closeMenus()    close mega-menu + mobile menu
  * Events
  *   document 'jeg:ready'  dispatched once when the intro (loader / curtain) is done
- *   document 'jeg:lang'   (dispatched by app.js) → fills / measures are refreshed
+ *   document 'jeg:lang'   (dispatched by app.js) → fills / measures / [data-count] numbers
+ *                         (FR "50 000" ↔ EN "50,000") are refreshed
  */
 (function () {
   'use strict';
@@ -474,34 +475,63 @@
   }
 
   /* ------------------------------------------------------------ counters */
-  function fmtNum(v, dec) {
+  /* Locale-aware: FR "50 000" / "4,5" (narrow no-break space, decimal comma) · EN "50,000" /
+     "4.5". The language is the closest .fr / .en wrapper (a counter inside <span class="fr">
+     always stays French), otherwise the page language (html.lang-en). Finished counters are
+     re-rendered on 'jeg:lang'; running ones pick the new locale up on their next frame.
+     Optional data-prefix-en / data-suffix-en override data-prefix / data-suffix in English. */
+  var counters = [];
+  function countIsEn(el) {
+    var w = el.closest && el.closest('.fr, .en');
+    if (w) return w.classList.contains('en');
+    return isEn();
+  }
+  function fmtNum(v, dec, en) {
     var s = v.toFixed(dec).split('.');
-    return s[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (s[1] ? ',' + s[1] : '');
+    return s[0].replace(/\B(?=(\d{3})+(?!\d))/g, en ? ',' : ' ') + (s[1] ? (en ? '.' : ',') + s[1] : '');
+  }
+  function countAttr(el, name, en) {
+    if (en && el.hasAttribute(name + '-en')) return el.getAttribute(name + '-en') || '';
+    return el.getAttribute(name) || '';
+  }
+  function renderCount(el, v) {
+    var en = countIsEn(el);
+    el.textContent = countAttr(el, 'data-prefix', en) + fmtNum(v, el._jegCount.dec, en) + countAttr(el, 'data-suffix', en);
   }
   function prepCount(el) {
     if (el._jegCount) return;
     var raw = el.getAttribute('data-count');
     var to = parseFloat(String(raw).replace(',', '.'));
     if (isNaN(to)) return;
-    el._jegCount = { to: to, dec: (String(raw).split(/[.,]/)[1] || '').length, done: false };
-    if (!reduced()) el.textContent = (el.getAttribute('data-prefix') || '') + fmtNum(0, el._jegCount.dec) + (el.getAttribute('data-suffix') || '');
+    el._jegCount = { to: to, dec: (String(raw).split(/[.,]/)[1] || '').length, done: false, end: false };
+    counters.push(el);
+    if (!reduced()) renderCount(el, 0);
   }
   function runCount(el) {
     var c = el._jegCount;
     if (!c || c.done) return;
     c.done = true;
-    var pre = el.getAttribute('data-prefix') || '', suf = el.getAttribute('data-suffix') || '';
     var dur = parseFloat(el.getAttribute('data-duration')) || 1900;
     var delay = parseFloat(el.getAttribute('data-delay')) || 0;
-    if (reduced()) { el.textContent = pre + fmtNum(c.to, c.dec) + suf; return; }
+    if (reduced()) { c.end = true; renderCount(el, c.to); return; }
     setTimeout(function () {
       var t0 = performance.now();
       (function step(now) {
         var t = clamp((now - t0) / dur, 0, 1);
-        el.textContent = pre + fmtNum(c.to * easeOutExpo(t), c.dec) + suf;
+        if (t >= 1) c.end = true;
+        renderCount(el, c.to * easeOutExpo(t));
         if (t < 1) raf(step);
       })(t0);
     }, delay);
+  }
+  /* new language: finished counters show their final value, not-started ones their 0 */
+  function relangCounts() {
+    counters = counters.filter(function (el) { return el.isConnected; });
+    counters.forEach(function (el) {
+      var c = el._jegCount;
+      if (c.end) renderCount(el, c.to);
+      else if (!c.done && !reduced()) renderCount(el, 0);
+    });
   }
 
   /* ------------------------------------------------------------- marquee */
@@ -941,6 +971,7 @@
     }
     intro.then(markReady, markReady);
     doc.addEventListener('jeg:lang', function () {
+      relangCounts();
       docH = root.scrollHeight;
       fills.forEach(function (f) { f.groups.forEach(function (g) { g.forEach(function (w) { w._o = null; }); }); });
       runScroll();

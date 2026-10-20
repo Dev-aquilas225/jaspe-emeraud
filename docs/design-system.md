@@ -114,6 +114,7 @@ Put `data-tone` on a **section, page hero, band, panel, card**: it sets every se
 | `editions` | ed-lilac / ed-ink | violet (large) / deep violet (small) | deep violet; accent = ed-ink | Jaspe’e Editions |
 | `langues` | --langues / langues-ink | **white** (large text only) / langues-ink | ink with white text; accent = white | Langues étrangères |
 | `shop` | --shop / shop-ink | em-700 (large) / shop-ink | ink with white text; accent = white | Shopping |
+| `pole-soft` | `--pole-soft` / `--pole-ink` (needs `data-pole` on itself or an ancestor) | pôle `--pa` / `--pa-ink` | vivid pôle fill (`--pole`/`--pole-fg`), hover `--pole-ink` | the pôle’s soft colour band inside a pôle page (see §5) |
 
 All body-text combinations pass WCAG AA. `--accent` is only guaranteed ≥3:1 (large text, UI); use `--accent-ink` (or `.text-accent-ink`) for small accent text.
 
@@ -156,6 +157,28 @@ For pôle-coloured items **outside** their own section (cards, menu rows, tags, 
 
 Components that react to `data-pole`: `.chip[data-pole]`, `.tag[data-pole]`, `.badge[data-pole]`, `.swatch`, `.icon-badge[data-pole]`, `.sticker[data-pole]`, `.mega__item`, `.agenda__item[data-pole]` (dot). Pôle → tone: training→`sommet`, langues→`langues`, shopping→`shop`, camp→`camp`, editions→`editions`.
 
+`data-pole` also sets three **AA-safe accent shades** (used by the two helpers below, available to page CSS):
+
+| data-pole | `--pa` (large text/UI on white, mist, soft; white text on it ≥4.5) | `--pa-ink` (small text ≥4.5 on white, mist, soft) | `--pa-dk` (dark mode, ≥4.5 on dark neutrals; `--pole-ink` text on it) |
+|---|---|---|---|
+| `training` | sommet-red | red 80% + sommet-black | red 70% + white |
+| `langues` | langues 75% + langues-ink | langues 65% + langues-ink | langues |
+| `shopping` | shop 45% + shop-ink | (same) | shop |
+| `camp` | camp-sky 55% + navy | camp-sky 45% + navy | camp-sky |
+| `editions` | violet 84% + ed-ink | violet 70% + ed-ink | violet 70% + white |
+
+### Pôle accent on a neutral section — `data-accent="pole"` (optional helper)
+Keeps a `white` / `mist` (or tone-less) section neutral but switches its accent world to the pôle: `--accent`, `--accent-ink`, `--accent-fg`, `--accent-2`, `--btn-*` (vivid `--pole` fill with `--pole-fg` text, hover ink), `--chip-*` (`--pole-soft` / `--pole-ink`), `--hl-*` (vivid pôle highlighter) and `--focus`. Dark mode switches to the `--pa-dk` variants automatically. Ignored on coloured tones (they already have their own accent). Not mandatory — existing pages don’t need to migrate.
+```html
+<section class="section" data-tone="white" data-pole="camp" data-accent="pole">…</section>
+```
+
+### Soft pôle tone — `data-tone="pole-soft"` (optional helper)
+A light colour world built from the pôle’s soft tint: `--bg: --pole-soft`, `--fg: --pole-ink`, white surfaces (cards inside get `--pole-soft` chips), pôle accents from `--pa` / `--pa-ink`, vivid pôle buttons and highlighter. Needs `data-pole` on the same element or an ancestor (falls back to mist/emerald otherwise). Like the other colour worlds it stays light in dark mode.
+```html
+<section class="section" data-tone="pole-soft" data-pole="langues">…</section>
+```
+
 ---
 
 ## 6. i18n & content rules
@@ -194,6 +217,7 @@ Emphasis helpers:
 <h1 class="display-xxl upper" data-split>Poli pour <span class="hl">l’excellence.</span></h1>  <!-- highlighter pill (animates in with data-split / data-reveal) -->
 <p class="h2">L’anglais qui se <span class="swash">vit</span></p>         <!-- hand-drawn swash (CSS only; colour = --swash, default --accent-2) -->
 ```
+`.hl` paints a pill covering 78% of the glyph box, set low (`background-position: 0 82%`) so it never covers the line above at tight display line-heights. Tune per use with `--hl-h` (height, default `78%`) and `--hl-y` (vertical position, default `82%`) — the reveal animation keeps working.
 
 ---
 
@@ -217,7 +241,7 @@ Emphasis helpers:
   <div class="section-head__aside"><p class="lead">…</p><a class="link-arrow" href="…">…<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-right"></use></svg></a></div>
 </div>
 ```
-Variants: `--split`, `--center`; `.section-head__title--xl`.
+Variants: `--split`, `--center`; `.section-head__title--xl`. In `--split` the last child is pushed to the right column end (`justify-self:end; max-width:46ch`) **only when there are two children** — a split head with just the title keeps it on the left.
 
 ---
 
@@ -236,7 +260,7 @@ Variants: `--split`, `--center`; `.section-head__title--xl`.
 ```
 * `.btn` = primary colours of the current tone (`--btn-bg/--btn-fg`, liquid fill to `--btn-hover-bg` on hover). Variants: `--primary` (same as default) · `--accent` (alias **`--gold`** kept) · `--ghost` (outline, fills with `--fg`) · `--light` (white/ink, for photos/colour) · `--dark` (ink) · `--wa` (WhatsApp green, ink text) · sizes `--sm` `--lg` · `--block` · `--icon` (round icon-only; add `aria-label`).
 * `.btn__icon` = round bubble with an arrow (rotates on hover). Plain `.icon` inside a button also works; add `icon--arrow` / `icon--up-right` / `icon--down` for the hover nudge.
-* `.link-arrow` (+`--light`), `.link-underline`, `.stretched-link` (makes a whole card clickable; other controls inside stay clickable when the card has `.has-stretched` or is a `.pole-card`).
+* `.link-arrow` (+`--light`), `.link-underline`, `.stretched-link` (makes a whole card clickable; other controls inside stay clickable when the card has `.has-stretched` or is a `.pole-card`; the card must be positioned — `.card` already is). The stretched link can be an `<a>`, a `<button>` or a `.btn` itself (`<a class="btn btn--sm stretched-link">`): a stretched `.btn` stays static so its overlay covers the card, and its hover becomes a plain colour change instead of the liquid fill.
 * Add `data-magnetic` on key CTAs (desktop pointer only).
 
 ### Eyebrow, chips, tags, badges, prices, swatches
@@ -254,6 +278,7 @@ Variants: `--split`, `--center`; `.section-head__title--xl`.
 <div class="chip-list">…</div>
 ```
 `.lchip[aria-pressed]` = filter chip (languages filter, created by app.js).
+`.icon-badge` is sized **only** with `--size` (it sets both `width` and `height`, so it never stretches into an oval in a flex column); as a direct child of a `.card` it aligns to the start (`.card.text-center` → centred). Never set `width`/`height` on it directly.
 
 ### Sticker (rotating circular text)
 `<path id>` must be **unique per page**. Ring text should fill the circle (≈ 2× the phrase); `textLength="280"` spreads it evenly.
@@ -268,6 +293,7 @@ Variants: `--split`, `--center`; `.section-head__title--xl`.
 </div>
 ```
 Place it absolutely in your layout (`.page-hero__sticker`, `.cta-band__sticker`, inside `.media-stack`, or page CSS). Use `data-reveal="pop"` for an entrance.
+Stickers are decorative: `.sticker` (and `.cta-band__sticker`) have `pointer-events:none`, so one that overlaps a button or link never steals its click — but still keep them off text and controls, and inside the viewport on phones (the ring text overhangs the circle by ≈7px).
 
 ### Cards
 A `.card` **without** `data-tone` is a surface of its section (`--surface`); **with** `data-tone` it becomes that colour world.
@@ -307,7 +333,8 @@ Pôle → tone: training `sommet` · langues `langues` · shopping `shop` · cam
 * Shapes: default rounded (`--radius-lg`) · `--sm` · `--arch` (needs a `ratio-*` class) · `--arch-full` · `--arch-down` · `--circle` · `--pill` · `--blob` · `--facet` (cut octagon) · `--square`.
 * Ratios: `ratio-1` `ratio-4x5` (default) `ratio-3x4` `ratio-2x3` `ratio-4x3` `ratio-3x2` `ratio-16x9` `ratio-21x9` `ratio-auto`.
 * Hover zoom: `.media--zoom` (or any `a:hover > .media`). Overlay gradient: `.media__shade`. Parallax inside: `<img data-parallax="0.1">`.
-* Composition: `.media-stack` (relative wrapper; a direct `.sticker` child is placed bottom-right, tweak `--sx --sr --st --sb`), `.float-chip` (absolute white pill with `--elev`; `.chip__dot` pulses; `.float-chip--idle` floats), `.collage` (12-col canvas, children `style="--col:1 / 8;--row:1 / 9;--z:2"`), `.badge-logo` (round white logo badge, `--size`).
+* **Explicit heights:** `.media` sizes itself with `aspect-ratio`. If you give a `.media` an explicit `height` / `min-height` (or `height:100%` in a grid/flex cell), also set `aspect-ratio:auto` (or add `.ratio-auto`) — otherwise the browser derives the **width** from the height × ratio and the frame overflows its column on mobile. (`.collage .media` already does this.)
+* Composition: `.media-stack` (relative wrapper; a direct `.sticker` child is placed bottom-right, tweak `--sx --sr --st --sb`), `.float-chip` (absolute white pill with `--elev`; `.chip__dot` pulses; `.float-chip--idle` floats; with `data-tone="…"` it paints that colour world and the dot takes `--accent-2`), `.collage` (12-col canvas, children `style="--col:1 / 8;--row:1 / 9;--z:2"`), `.badge-logo` (round white logo badge, `--size`).
 
 ### Marquee (big bold type)
 ```html
@@ -358,6 +385,7 @@ main.js clones the group once (aria-hidden) if only one is present and pauses it
   </div>
 </div></section>
 ```
+`.cta-band__sticker` (a direct child of `.cta-band`) sits top-right at every width (≥960px: if your actions column is tall — e.g. stacked buttons — give `.cta-band__grid` enough `padding-top` to start below the sticker, as `.ed-cta` does). Below 960px it shrinks (`.sticker` `--size:88px`) and the band’s grid gets `padding-top:72px` so it never covers the eyebrow/title; both are zero/low-specificity, so page CSS can tune them (`.my-cta .sticker{--size:96px}`, `.my-cta .cta-band__grid{padding-top:84px}`).
 For a full-width final CTA use `<section class="section" data-tone="emerald-vivid">` instead. `.panel` = rounded box with any tone (`<div class="panel" data-tone="emerald">`).
 
 ### Agenda / timeline
@@ -397,12 +425,14 @@ Numbers (01, 02…) are generated in accent circles.
   <div class="stat"><span class="stat__num"><span data-count="2">2</span><sup>e</sup></span><p class="stat__label">édition du Sommet</p></div>
 </div>
 ```
-Only real figures from the brief.
+Only real figures from the brief. A `.stat` is a `--surface` box by default; with `data-tone="…"` (`<div class="stat" data-tone="camp">`) it paints that colour world (`--bg`/`--bg-image`/`--fg`, `.stat__sub` in `--fg-2`).
+
+Counters are **bilingual by themselves**: `data-count` formats in French (`50 000`, `4,5`) or English (`50,000`, `4.5`) following the closest `.fr` / `.en` wrapper, else the page language, and re-render on language switch. One element is enough: `<span class="price-tag__value"><span data-count="50000">50&nbsp;000</span><small>FCFA</small></span>`. Optional `data-prefix-en` / `data-suffix-en` override `data-prefix` / `data-suffix` in English. (A `data-count` inside a `.fr` span next to a static `.en` span — the older pattern — keeps working.)
 
 ### Other components
 * `.price-list > .price-list__item` with `__name`, `__value` (`<small>dès</small>3 000 FCFA`), `__desc`.
-* `.pillars` (+`--row` ≥1100px) > `.pillar` > `.pillar__num` + `<div><h3 class="pillar__title">…</h3><p>…</p></div>`.
-* `.b2b` (inside an `emerald` section): left text (`.b2b__title`, `.lead`, `.b2b__cta`, `.fine`) + `ul.b2b__list > li` with `.b2b__ico`.
+* `.pillars` (+`--row` ≥1100px, items top-aligned in the equal-height row) > `.pillar` > `.pillar__num` + `<div><h3 class="pillar__title">…</h3><p>…</p></div>`.
+* `.b2b` (inside an `emerald` section): left text (`.b2b__title`, `.lead`, `.b2b__cta`, `.fine`) + `ul.b2b__list > li` with `.b2b__ico`. A `li` with `data-tone="…"` (e.g. `data-tone="camp" data-pole="camp"`) paints its own colour world; `.b2b__ico` follows that tone’s accent.
 * Lists: `.check-list` (accent check circles), `.dot-list` (alias `.gem-list`), `.num-list`.
 * `.pull-quote` (+`<cite>`), `.note` (+`--surface`), `.scroll-cue` (`<a class="scroll-cue" href="#next"><span class="scroll-cue__icon"><svg class="icon">…#i-arrow-down</svg></span>Défiler</a>`), `.rule`.
 
@@ -422,7 +452,7 @@ Everything is opt-in with data-attributes; content is visible without JS and wit
 | `data-stagger="90"` | ms step (default 90) | on a parent: every direct child gets `data-reveal="up"` (unless it has one) and children revealed together are staggered |
 | `data-split` | (words) · `"chars"` | line-mask text reveal per word / per character; FR and EN stagger independently. Use on titles. Works with `<em>`, `.hl`, `.swash` inside. |
 | `data-fill` | — | words light up (16% → 100%) while scrolling through (long statements) |
-| `data-count="15"` | + `data-prefix`, `data-suffix`, `data-duration` (ms, default 1900), decimals via `"4,5"` | counts up from 0 (French number formatting) |
+| `data-count="15"` | + `data-prefix`, `data-suffix` (+ optional `data-prefix-en` / `data-suffix-en`), `data-duration` (ms, default 1900), decimals via `"4,5"` | counts up from 0; FR `50 000` / EN `50,000` (closest `.fr`/`.en` wrapper, else page language), re-rendered on `jeg:lang` |
 | `data-parallax="0.12"` | factor (default .12; negative = opposite) | vertical parallax; on `<img>` inside `.media` it is clamped to the frame |
 | `data-magnetic="0.32"` | strength | element follows the mouse (desktop only) |
 | `data-tilt="8"` | max degrees | 3D tilt + glare on hover (desktop only) |
@@ -438,7 +468,7 @@ API:
 * `JEG.navigate(url)` — leave with the emerald curtain transition (internal links are intercepted automatically; opt out with `data-no-transition`; `target="_blank"`, downloads, mailto/tel are ignored).
 * `JEG.closeMenus()` — close mega-menu + mobile menu.
 
-Events: `document` **`jeg:ready`** (once, after loader/curtain — start page-specific intro animations on it, or check `JEG.isReady` first); `jeg:lang` (dispatched by app.js; fills/metrics refresh); `jeg:theme`, `jeg:modal` (app.js).
+Events: `document` **`jeg:ready`** (once, after loader/curtain — start page-specific intro animations on it, or check `JEG.isReady` first); `jeg:lang` (dispatched by app.js; fills/metrics refresh, `data-count` numbers re-formatted); `jeg:theme`, `jeg:modal` (app.js).
 
 States on `<html>`: `js`/`no-js`, `lang-en`, `dark`, `is-returning`, `is-loading`, `is-ready`, `menu-open`, `mega-open`, `has-cursor` (+ app.js: `has-modal`, `is-scroll-locked`, `app-ready`).
 
