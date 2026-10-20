@@ -1,18 +1,19 @@
 <!-- =====================================================================
      partials/footer.html — paste EXACTLY right after </main>.
-     Big CTA headline + link columns + legal + giant wordmark + back-to-top.
+     Ink tone: big CTA headline + link columns (with pôle swatches) + legal
+     + giant wordmark + back-to-top button (sits above the WhatsApp button).
      ===================================================================== -->
-<footer class="site-footer" id="site-footer">
+<footer class="site-footer" id="site-footer" data-tone="ink">
   <div class="container">
     <div class="footer-cta">
       <div>
-        <p class="eyebrow eyebrow--gem" data-reveal="fade">Jaspe-Émeraude Group</p>
-        <p class="footer-cta__title" data-split><span class="fr">Façonnons ensemble votre <em>excellence</em>.</span><span class="en">Let’s shape your <em>excellence</em> together.</span></p>
+        <p class="eyebrow eyebrow--dot" data-reveal="fade">Jaspe-Émeraude Group</p>
+        <p class="footer-cta__title" data-split><span class="fr">Façonnons ensemble votre <em>excellence.</em></span><span class="en">Let’s shape your <em>excellence</em> together.</span></p>
       </div>
       <div class="footer-cta__side" data-reveal data-delay="200">
         <p><span class="fr">Bienvenue chez vous à JASPE-EMERAUDE GROUP&#8239;! Bâtissons ensemble, pierre après pierre.</span><span class="en">Welcome home to JASPE-EMERAUDE GROUP! Let us build together, stone by stone.</span></p>
         <div class="btn-row">
-          <button type="button" class="btn btn--gold js-reg" data-magnetic><span class="fr">S’inscrire</span><span class="en">Register</span><svg class="icon icon--arrow" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-arrow-right"></use></svg></button>
+          <button type="button" class="btn btn--primary js-reg" data-magnetic><span class="fr">S’inscrire</span><span class="en">Register</span><span class="btn__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="assets/img/icons.svg#i-arrow-right"></use></svg></span></button>
           <a class="btn btn--ghost js-wa" href="https://wa.me/2250798719076" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/img/icons.svg#i-whatsapp"></use></svg><span class="fr">Nous écrire</span><span class="en">Message us</span></a>
         </div>
       </div>
@@ -21,7 +22,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" aria-label="Jaspe-Émeraude Group — Accueil" data-aria-fr="Jaspe-Émeraude Group — Accueil" data-aria-en="Jaspe-Émeraude Group — Home">
-          <img class="brand-mark" src="assets/img/brand/logo-mark-t.webp" srcset="assets/img/brand/logo-mark-t.webp 1x, assets/img/brand/logo-mark-t@2x.webp 2x" width="242" height="256" alt="" loading="lazy" decoding="async">
+          <img class="brand-mark brand-mark--white" src="assets/img/brand/logo-mark-white.webp" srcset="assets/img/brand/logo-mark-white.webp 1x, assets/img/brand/logo-mark-white@2x.webp 2x" width="242" height="256" alt="" loading="lazy" decoding="async">
           <span class="brand__name" aria-hidden="true"><span class="brand__word">JASPE-ÉMERAUDE</span><span class="brand__group">GROUP</span></span>
         </a>
         <p class="footer-slogan"><span class="fr">« Poli pour l’excellence »</span><span class="en">“Polished for excellence”</span></p>
@@ -30,11 +31,11 @@
       <nav class="footer-col" aria-labelledby="ft-poles">
         <h2 id="ft-poles"><span class="fr">Nos pôles</span><span class="en">Our divisions</span></h2>
         <ul class="footer-links">
-          <li><a href="training.html"><span class="num">01</span><span><span class="fr">Training / Sommet de l’Excellence</span><span class="en">Training / Excellence Summit</span></span></a></li>
-          <li><a href="langues.html"><span class="num">02</span><span><span class="fr">Langues étrangères</span><span class="en">Foreign languages</span></span></a></li>
-          <li><a href="shopping.html"><span class="num">03</span><span>Shopping</span></a></li>
-          <li><a href="english-camp.html"><span class="num">04</span><span>English Camp</span></a></li>
-          <li><a href="editions.html"><span class="num">05</span><span>Jaspe’e Editions</span></a></li>
+          <li><a href="training.html" data-pole="training"><span class="swatch" aria-hidden="true">01</span><span><span class="fr">Training / Sommet de l’Excellence</span><span class="en">Training / Excellence Summit</span></span></a></li>
+          <li><a href="langues.html" data-pole="langues"><span class="swatch" aria-hidden="true">02</span><span><span class="fr">Langues étrangères</span><span class="en">Foreign languages</span></span></a></li>
+          <li><a href="shopping.html" data-pole="shopping"><span class="swatch" aria-hidden="true">03</span><span>Shopping</span></a></li>
+          <li><a href="english-camp.html" data-pole="camp"><span class="swatch" aria-hidden="true">04</span><span>English Camp</span></a></li>
+          <li><a href="editions.html" data-pole="editions"><span class="swatch" aria-hidden="true">05</span><span>Jaspe’e Editions</span></a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-labelledby="ft-group">
@@ -76,7 +77,7 @@
       </nav>
     </div>
   </div>
-  <p class="footer-giant" aria-hidden="true">Jaspe-<em>Émeraude</em></p>
+  <p class="footer-giant" aria-hidden="true">JASPE-ÉMERAUDE</p>
 </footer>
 <button type="button" class="to-top" data-to-top aria-label="Haut de page" data-aria-fr="Haut de page" data-aria-en="Back to top">
   <svg class="to-top__ring" viewBox="0 0 50 50" aria-hidden="true" focusable="false"><path class="track" d="M25 1a24 24 0 1 1 0 48a24 24 0 1 1 0-48"/><path class="fill" pathLength="1" d="M25 1a24 24 0 1 1 0 48a24 24 0 1 1 0-48"/></svg>

@@ -1,12 +1,12 @@
 /*!
- * Jaspe-Émeraude Group — motion engine (assets/js/main.js)
+ * Jaspe-Émeraude Group — motion engine v3 (assets/js/main.js)
  * « Poli pour l’excellence ». Vanilla, no dependencies.
- * Owner: foundation A. Page agents: DO NOT EDIT — use the data-attributes and
+ * Owner: foundation A3. Page agents: DO NOT EDIT — use the data-attributes and
  * the window.JEG API documented in docs/design-system.md.
  *
  * Public API
  *   window.JEG.refresh(root?)  re-scan [data-reveal] [data-split] [data-fill] [data-count]
- *                              [data-parallax] [data-draw] [data-stagger] inside root
+ *                              [data-parallax] [data-draw] [data-stagger] .marquee inside root
  *   window.JEG.isReady         true once the loader / page transition has finished
  *   window.JEG.scrollTo(target, {offset}) eased scroll to an element / y (respects reduced motion)
  *   window.JEG.navigate(url)   leave the page with the curtain transition
@@ -54,7 +54,7 @@
   }
   function headerH() {
     var v = parseFloat(getComputedStyle(root).getPropertyValue('--header-h'));
-    return isNaN(v) ? 76 : v;
+    return isNaN(v) ? 84 : v;
   }
   /* language roots: split .fr / .en separately so each language staggers from 0 */
   function langTargets(el) {
@@ -359,7 +359,7 @@
             frag.appendChild(w);
           });
           node.replaceChild(frag, k);
-        } else if (k.nodeType === 1 && k.tagName !== 'BR' && !k.classList.contains('split-w') && !k.classList.contains('sr-only')) {
+        } else if (k.nodeType === 1 && k.tagName !== 'BR' && !(k instanceof SVGElement) && !k.classList.contains('split-w') && !k.classList.contains('sr-only')) {
           walk(k);
         }
       });
@@ -504,6 +504,28 @@
     }, delay);
   }
 
+  /* ------------------------------------------------------------- marquee */
+  /* .marquee > .marquee__track > .marquee__group : the group is cloned once
+     (aria-hidden) when only one is present, and the animation is paused while
+     the marquee is off-screen. */
+  var marqueeIO = 'IntersectionObserver' in win ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { en.target.classList.toggle('is-offscreen', !en.isIntersecting); });
+  }, { rootMargin: '10% 0px 10% 0px' }) : null;
+  function prepMarquee(m) {
+    if (m._jegMarquee) return;
+    m._jegMarquee = true;
+    var track = $('.marquee__track', m);
+    var groups = track ? $$(':scope > .marquee__group', track) : [];
+    if (track && groups.length === 1) {
+      var c = groups[0].cloneNode(true);
+      c.setAttribute('aria-hidden', 'true');
+      $$('a, button, [tabindex]', c).forEach(function (n) { n.setAttribute('tabindex', '-1'); });
+      $$('[id]', c).forEach(function (n) { n.removeAttribute('id'); });
+      track.appendChild(c);
+    }
+    if (marqueeIO) marqueeIO.observe(m);
+  }
+
   /* -------------------------------------------------------------- reveal */
   var revealIO = 'IntersectionObserver' in win ? new IntersectionObserver(onReveal, { rootMargin: '0px 0px -8% 0px', threshold: 0 }) : null;
   var activeIO = 'IntersectionObserver' in win ? new IntersectionObserver(function (entries) {
@@ -568,6 +590,7 @@
     scope(ctx, '[data-count]').forEach(prepCount);
     scope(ctx, '[data-draw]').forEach(prepDraw);
     scope(ctx, '[data-parallax]').forEach(prepParallax);
+    scope(ctx, '.marquee').forEach(prepMarquee);
   }
   function observe(ctx) {
     var els = scope(ctx, REVEAL_SEL);
@@ -795,7 +818,7 @@
     lockScroll(true);
     return new Promise(function (resolve) {
       var bar = $('[data-loader-bar]', L), count = $('[data-loader-count]', L);
-      var MIN = 2500, MAX = 5200;
+      var MIN = 2800, MAX = 5400;
       var fontsDone = false, loadDone = doc.readyState === 'complete';
       (doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve()).then(function () { fontsDone = true; });
       if (!loadDone) win.addEventListener('load', function () { loadDone = true; }, { once: true });

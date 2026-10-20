@@ -706,7 +706,7 @@
             '</ol>' +
             '<p class="form__note">' + biHtml('Votre inscription est confirmée dès vérification du paiement.', 'Your registration is confirmed once the payment has been verified.') + '</p>' +
             '<div class="reg-actions">' +
-              '<a class="btn btn--primary btn--wa reg-wa" href="#" target="_blank" rel="noopener"><span class="btn__icon">' + ICONS.wa + '</span><span class="btn__label">' + biHtml('Envoyer mon inscription sur WhatsApp', 'Send my registration on WhatsApp') + '</span></a>' +
+              '<a class="btn btn--primary btn--wa reg-wa" href="#" target="_blank" rel="noopener"><span class="btn__label">' + biHtml('Envoyer mon inscription sur WhatsApp', 'Send my registration on WhatsApp') + '</span><span class="btn__icon">' + ICONS.wa + '</span></a>' +
               '<button type="button" class="btn btn--ghost js-copy" data-copy="' + CONFIG.PAYMENT_NUMBER_RAW + '"><span class="btn__label">' + biHtml('Copier le numéro de paiement', 'Copy payment number') + '</span></button>' +
             '</div>' +
           '</div>' +
@@ -911,7 +911,7 @@
             '<p class="jm__kicker">' + biHtml('Candidature prête', 'Application ready') + '</p>' +
             '<h3 class="reg-done__title">' + biHtml('Dernière étape', 'One last step') + '</h3>' +
             '<p class="reg-done__text">' + biHtml('Envoyez votre candidature sur WhatsApp avec le bouton ci-dessous. Nous reviendrons vers vous très bientôt.', 'Send your application on WhatsApp using the button below. We will get back to you very soon.') + '</p>' +
-            '<div class="reg-actions"><a class="btn btn--primary btn--wa teach-wa" href="#" target="_blank" rel="noopener"><span class="btn__icon">' + ICONS.wa + '</span><span class="btn__label">' + biHtml('Envoyer ma candidature sur WhatsApp', 'Send my application on WhatsApp') + '</span></a></div>' +
+            '<div class="reg-actions"><a class="btn btn--primary btn--wa teach-wa" href="#" target="_blank" rel="noopener"><span class="btn__label">' + biHtml('Envoyer ma candidature sur WhatsApp', 'Send my application on WhatsApp') + '</span><span class="btn__icon">' + ICONS.wa + '</span></a></div>' +
           '</div>' +
         '</div>' +
         '</div>';

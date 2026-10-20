@@ -47,16 +47,15 @@ html.is-theme-vt::view-transition-new(root) { animation: none; mix-blend-mode: n
 html.is-theme-vt::view-transition-old(root) { z-index: 1; }
 html.is-theme-vt::view-transition-new(root) { z-index: 2; }
 
-/* Icônes SVG injectées dans les boutons */
-.btn__icon { display: inline-flex; flex: none; }
-.btn__icon svg { width: 1.25em; height: 1.25em; }
+/* Icônes SVG injectées (sans classe .icon) dans la bulle .btn__icon de main.css */
+.btn__icon > svg:not(.icon) { width: 1.05em; height: 1.05em; }
 
-/* Variante WhatsApp des boutons .btn (fond vert --wa, texte encre : contraste AAA) */
+/* Variante WhatsApp des boutons .btn (fond vert --wa, texte encre : contraste AAA).
+   Règle les variables de .btn (main.css) : --btn-* et leurs relais privés --_*. */
 .btn.btn--wa {
-  --btn-bg: var(--wa); --btn-fg: var(--ink);
-  background-color: var(--wa); color: var(--ink); border-color: var(--wa);
+  --btn-bg: var(--wa); --btn-fg: var(--ink); --btn-hover-bg: var(--ink); --btn-hover-fg: var(--white);
+  --_bg: var(--wa); --_fg: var(--ink); --_hbg: var(--ink); --_hfg: var(--white); --_bd: transparent;
 }
-.btn.btn--wa:hover { background-color: color-mix(in srgb, var(--wa) 86%, var(--ink)); border-color: color-mix(in srgb, var(--wa) 86%, var(--ink)); color: var(--ink); }
 
 /* Repli minimal des puces de langues (.lchip) si main.css ne les style pas
    (spécificité nulle : main.css garde toujours la main). */
@@ -126,14 +125,15 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
   position: relative; overflow: hidden; isolation: isolate;
   display: flex; flex-direction: column; align-items: flex-start;
   padding: 30px 74px 26px 24px;
-  background: var(--bg); color: var(--fg);
+  /* (comme [data-tone] de main.css : couleur + dégradé éventuel du ton, ex. camp) */
+  background-color: var(--bg); background-image: var(--bg-image, none); color: var(--fg);
   transition: background-color .45s var(--ease-out), color .45s var(--ease-out);
 }
 .jm__num { /* grand numéro du pôle, en contour */
   position: absolute; z-index: -1; right: -6px; bottom: -22px;
   font: 800 132px/1 var(--font-display); letter-spacing: -.06em;
   font-variation-settings: "opsz" 96;
-  color: transparent; -webkit-text-stroke: 1.5px currentColor; opacity: .3;
+  color: transparent; -webkit-text-stroke: 1.5px var(--fg); opacity: .32;
   pointer-events: none; user-select: none;
 }
 .jm__num:empty { display: none; }
@@ -151,9 +151,9 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
 .jm__lead { margin: 12px 0 0; max-width: 36ch; font: 400 15px/1.55 var(--font-body); color: var(--fg-2); }
 .jm__pole {
   order: -1; margin: 0 0 16px; display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 14px 7px 10px; border-radius: 999px;
+  max-width: 100%; padding: 7px 14px 7px 10px; border-radius: 16px;
   background: var(--chip-bg); color: var(--chip-fg);
-  font: 600 12.5px/1.2 var(--font-body); letter-spacing: .02em;
+  font: 600 12.5px/1.25 var(--font-body); letter-spacing: .02em;
 }
 .jm__pole::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: currentColor; }
 .jm__pole[hidden] { display: none; }
@@ -263,7 +263,7 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
  * ========================================================================= */
 .form { display: grid; gap: 18px; }
 .form[hidden], form.js-form[hidden] { display: none !important; }
-.jm .btn { text-align: center; }
+.jm .btn { text-align: center; white-space: normal; line-height: 1.25; padding-top: 12px; padding-bottom: 12px; }
 .form__row { display: grid; gap: 18px; }
 @media (min-width: 600px) { .form__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 .field { position: relative; display: grid; gap: 8px; align-content: start; min-width: 0; }
@@ -319,8 +319,14 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
 .field.is-invalid input:not([type="checkbox"]):not([type="radio"]),
 .field.is-invalid select,
 .field.is-invalid textarea {
+  /* anneau intérieur : visible même sur un fond de section rouge/orange */
   border-color: var(--jeg-danger);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--jeg-danger) 16%, transparent);
+  box-shadow: inset 0 0 0 1.5px var(--jeg-danger);
+}
+.field.is-invalid input:not([type="checkbox"]):not([type="radio"]):focus,
+.field.is-invalid select:focus,
+.field.is-invalid textarea:focus {
+  box-shadow: inset 0 0 0 1.5px var(--jeg-danger), 0 0 0 4px color-mix(in srgb, var(--focus) 24%, transparent);
 }
 .field__error {
   display: flex; align-items: flex-start; gap: 7px;
@@ -444,7 +450,7 @@ html.dark .jm__scrim { background: color-mix(in srgb, var(--ink) 78%, transparen
 .teacher__head { width: 100%; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
 .teacher__index {
   font: 800 30px/1 var(--font-display); letter-spacing: -.04em;
-  color: transparent; -webkit-text-stroke: 1.25px currentColor; opacity: .35;
+  color: transparent; -webkit-text-stroke: 1.25px var(--surface-fg); opacity: .4;
 }
 /* Avatar : photo ou initiales, cerclé de la couleur du pôle */
 .teacher__avatar {

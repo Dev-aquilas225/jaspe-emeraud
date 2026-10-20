@@ -1,20 +1,22 @@
 <!-- =====================================================================
      partials/loader.html — paste EXACTLY as the first thing inside <body>.
-     Contains: brand loader (first visit of the session), page-transition
-     curtain, custom cursor and scroll-progress bar. All decorative parts
-     are aria-hidden; nothing here is focusable. main.js drives it.
+     Contains: brand loader (first visit of the session: deep emerald screen,
+     a rough coral jaspe stone is cut and polished into a vivid emerald),
+     page-transition curtain (emerald), custom cursor and scroll-progress bar.
+     All decorative parts are aria-hidden; nothing here is focusable.
+     main.js drives it (data-loader* hooks — do not rename).
      ===================================================================== -->
 <div class="loader" data-loader>
   <div class="loader__veil" data-loader-veil></div>
   <p class="sr-only" role="status"><span class="fr">Chargement…</span><span class="en">Loading…</span></p>
   <div class="loader__corner loader__corner--tl" aria-hidden="true">Abidjan · Côte d’Ivoire</div>
-  <div class="loader__corner loader__corner--tr" aria-hidden="true"><span class="fr">Formation · Langues · English Camp · Édition</span><span class="en">Training · Languages · English Camp · Publishing</span></div>
+  <div class="loader__corner loader__corner--tr" aria-hidden="true"><span class="fr">Training · Langues · Shopping · English Camp · Éditions</span><span class="en">Training · Languages · Shopping · English Camp · Publishing</span></div>
   <div class="loader__stage" aria-hidden="true">
     <div class="loader__gem" data-loader-gem>
       <span class="loader__glow"></span>
       <div class="loader__shape" data-loader-shape>
         <span class="loader__jaspe"></span>
-        <span class="loader__emerald"><svg class="loader__planes" viewBox="0 0 100 128" preserveAspectRatio="none" focusable="false"><defs><linearGradient id="lg-gt" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#A6EDD0"/><stop offset=".45" stop-color="#2FA67F"/><stop offset="1" stop-color="#155244"/></linearGradient></defs><path fill="#1B5E4F" d="M22 0H78L100 22V106L78 128H22L0 106V22Z"/><path fill="#8BE6C4" opacity=".55" d="M0 22L22 0L28 10L10 28Z"/><path fill="#5FD3A8" opacity=".5" d="M22 0H78L72 10H28Z"/><path fill="#2FA67F" opacity=".5" d="M78 0L100 22L90 28L72 10Z"/><path fill="#0B3A2F" opacity=".55" d="M100 22V106L90 100V28Z"/><path fill="#062A21" opacity=".6" d="M100 106L78 128L72 118L90 100Z"/><path fill="#062A21" opacity=".5" d="M78 128H22L28 118H72Z"/><path fill="#1F7A63" opacity=".6" d="M22 128L0 106L10 100L28 118Z"/><path fill="#3DBF93" opacity=".45" d="M0 22L10 28V100L0 106Z"/><path fill="#7FE0BC" opacity=".3" d="M28 10H72L65 22H35Z"/><path fill="#0E4436" opacity=".45" d="M90 28V100L78 93V35Z"/><path fill="#0B3A2F" opacity=".4" d="M72 118H28L35 106H65Z"/><path fill="#3DBF93" opacity=".3" d="M10 28L22 35V93L10 100Z"/><path fill="url(#lg-gt)" opacity=".9" d="M35 22H65L78 35V93L65 106H35L22 93V35Z"/></svg></span>
+        <span class="loader__emerald"><svg class="loader__planes" viewBox="0 0 100 128" preserveAspectRatio="none" focusable="false"><defs><linearGradient id="lg-gt" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#D6FCEC"/><stop offset=".45" stop-color="#2BD08F"/><stop offset="1" stop-color="#0E7A57"/></linearGradient></defs><path fill="#12A06F" d="M22 0H78L100 22V106L78 128H22L0 106V22Z"/><path fill="#B5F8DC" opacity=".75" d="M0 22L22 0L28 10L10 28Z"/><path fill="#7DEDC0" opacity=".7" d="M22 0H78L72 10H28Z"/><path fill="#2BD08F" opacity=".7" d="M78 0L100 22L90 28L72 10Z"/><path fill="#0A5640" opacity=".6" d="M100 22V106L90 100V28Z"/><path fill="#04281F" opacity=".55" d="M100 106L78 128L72 118L90 100Z"/><path fill="#063D2E" opacity=".55" d="M78 128H22L28 118H72Z"/><path fill="#0E7A57" opacity=".7" d="M22 128L0 106L10 100L28 118Z"/><path fill="#5BE3AE" opacity=".6" d="M0 22L10 28V100L0 106Z"/><path fill="#C9FBE6" opacity=".45" d="M28 10H72L65 22H35Z"/><path fill="#0A5640" opacity=".5" d="M90 28V100L78 93V35Z"/><path fill="#063D2E" opacity=".45" d="M72 118H28L35 106H65Z"/><path fill="#5BE3AE" opacity=".45" d="M10 28L22 35V93L10 100Z"/><path fill="url(#lg-gt)" opacity=".95" d="M35 22H65L78 35V93L65 106H35L22 93V35Z"/></svg></span>
         <span class="loader__shine"></span>
       </div>
       <svg class="loader__svg" viewBox="0 0 200 220" preserveAspectRatio="none" focusable="false">
@@ -49,7 +51,7 @@
 </div>
 <div class="curtain" data-curtain aria-hidden="true">
   <div class="curtain__inner">
-    <img class="curtain__mark" src="assets/img/brand/logo-mark-ivory.webp" srcset="assets/img/brand/logo-mark-ivory.webp 1x, assets/img/brand/logo-mark-ivory@2x.webp 2x" width="242" height="256" alt="" decoding="async">
+    <img class="curtain__mark" src="assets/img/brand/logo-mark-white.webp" srcset="assets/img/brand/logo-mark-white.webp 1x, assets/img/brand/logo-mark-white@2x.webp 2x" width="242" height="256" alt="" decoding="async">
     <span class="curtain__name">Jaspe-Émeraude</span>
     <span class="curtain__bar"></span>
   </div>
