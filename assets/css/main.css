@@ -479,6 +479,9 @@ html.dark .brand-mark:not(.brand-mark--white),:is([data-tone="emerald"],[data-to
 .card{position:relative;display:flex;flex-direction:column;gap:14px;min-width:0;border-radius:var(--radius);padding:clamp(22px,2.4vw,36px);transition:transform .6s var(--ease-out),background-color .4s,box-shadow .4s}
 /* a card without data-tone is a "surface" of the section it sits in */
 .card:not([data-tone]){--bg:var(--surface);--bg-image:none;--fg:var(--surface-fg);--fg-2:var(--surface-fg-2);background:var(--surface);color:var(--surface-fg)}
+/* chips on white surfaces inside light colour worlds stay visible */
+[data-tone="camp"] .card:not([data-tone]){--chip-bg:var(--camp-soft);--chip-fg:var(--camp-navy)}
+[data-tone="editions"] .card:not([data-tone]){--chip-bg:var(--ed-lilac);--chip-fg:var(--ed-ink)}
 .card.card--outline{background:transparent;box-shadow:inset 0 0 0 1.5px var(--border)}
 .card--lg{border-radius:var(--radius-lg)}
 .card--hover:hover{transform:translateY(-6px)}
@@ -691,7 +694,7 @@ html.menu-open,html.is-locked{overflow:hidden}
 @media (min-width:1100px){.mobile-menu{display:none !important}}
 
 /* ---------- 15 · Footer (ink tone) ---------- */
-.site-footer{position:relative;overflow:hidden;isolation:isolate;padding-top:clamp(72px,9vw,140px)}
+.site-footer{position:relative;overflow:hidden;isolation:isolate;padding-top:clamp(72px,9vw,140px);background-color:var(--bg);color:var(--fg)}
 .site-footer a{color:inherit}
 .footer-cta{display:grid;gap:32px;align-items:end;padding-bottom:clamp(48px,6vw,88px);border-bottom:1px solid var(--border)}
 .footer-cta .eyebrow{margin-bottom:clamp(16px,2vw,26px)}
