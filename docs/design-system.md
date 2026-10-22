@@ -457,7 +457,7 @@ Everything is opt-in with data-attributes; content is visible without JS and wit
 | `data-magnetic="0.32"` | strength | element follows the mouse (desktop only) |
 | `data-tilt="8"` | max degrees | 3D tilt + glare on hover (desktop only) |
 | `data-draw` | (on reveal) · `"scrub"` (scroll-linked) | draws SVG strokes (path/line/circle…). On an HTML element with `"scrub"` it sets `--draw` 0→1 (used by `.agenda__line`). |
-| `data-cursor="Voir"` | + `data-cursor-en="View"` | custom cursor shows a label over the element |
+| `data-cursor="Voir"` | + `data-cursor-en="View"` | custom cursor shows a label over the element (the cursor otherwise takes the `--fg` of the tone under the pointer, with a halo in its `--bg` — keep both variables defined on any new full-screen layer) |
 | `.marquee` | — | group cloned + paused off-screen (CSS animation) |
 | `data-to-top`, `data-header`, `data-mega*`, `data-menu-toggle`, `data-mobile-menu`, `data-nav-backdrop`, `data-curtain`, `data-loader*`, `data-year` | partial hooks | don’t rename |
 

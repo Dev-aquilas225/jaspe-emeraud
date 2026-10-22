@@ -729,7 +729,19 @@
       c.classList.toggle('is-hover', !!hit);
       c.classList.toggle('has-label', !!text);
       if (text) label.textContent = text;
+      paint(t);
     }, { passive: true });
+    // tone-aware colour: the semantic --fg/--bg inherited at the pointer (ink on light tones, white on dark)
+    var last = null;
+    function paint(t) {
+      last = t;
+      var cs = getComputedStyle(t);
+      c.style.setProperty('--cursor-c', cs.getPropertyValue('--fg').trim() || 'currentColor');
+      c.style.setProperty('--cursor-h', cs.getPropertyValue('--bg').trim() || 'transparent');
+    }
+    // theme switched under a still pointer → repaint once the new tokens apply
+    if (win.MutationObserver) new MutationObserver(function () { if (last && last.isConnected) raf(function () { paint(last); }); })
+      .observe(root, { attributes: true, attributeFilter: ['class'] });
     doc.addEventListener('pointerdown', function () { c.classList.add('is-down'); }, { passive: true });
     doc.addEventListener('pointerup', function () { c.classList.remove('is-down'); }, { passive: true });
     root.addEventListener('mouseleave', function () { c.classList.add('is-hidden'); shown = false; });
